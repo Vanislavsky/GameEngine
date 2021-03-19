@@ -17,6 +17,7 @@ public:
 	float get_value(int, int);
 	void set_value(float, int, int);
 	float& operator()(size_t, size_t);
+	float* begin();
 
 	mat4 operator+(const mat4&);
 	mat4 operator-(const mat4&);
@@ -47,5 +48,6 @@ mat4 r(vec4& _vec, float angle, vec3& arbitrary_axis);
 
 mat4 look_at(vec3&, vec3&, vec3&);
 mat4 perspective(float, float, float, float);
+mat4 ortho(float left, float right, float bottom, float top, float near, float far);
 
 

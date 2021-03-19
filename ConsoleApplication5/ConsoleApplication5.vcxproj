@@ -147,6 +147,7 @@
     <ClCompile Include="mat3.cpp" />
     <ClCompile Include="mat4.cpp" />
     <ClCompile Include="math_test.cpp" />
+    <ClCompile Include="opengl_test.cpp" />
     <ClCompile Include="shaderLoader.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="vec2.cpp" />

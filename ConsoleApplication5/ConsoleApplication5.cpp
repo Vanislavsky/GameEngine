@@ -19,6 +19,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include"opengl_test.cpp"
+
 // Интерфейс можно менять как угодно
 class Camera {
 public:
@@ -77,6 +79,8 @@ private:
 
 
 int main() {
+	
+	//test();
 	sf::ContextSettings settings;
 	settings.depthBits = 24; // количество битов буффера глубины
 	settings.stencilBits = 8; //количество битов буфера трафарета, используется с буфером глубины для ограничения области рендеринга
@@ -200,13 +204,13 @@ int main() {
 		//glDrawArrays(GL_TRIANGLES, 0, 6); //отрисовали
 
 
-		/*vec3 rotate_vec(1.0f, 0.0f, 0.0f);
+		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
 		auto rotat = rotate(-55.0f, rotate_vec);
 
 		vec3 trans_vec(0.0f, 0.0f, -3.0f);
 		auto trans = translate(trans_vec);
 
-		auto proj = perspective(45.0f, (GLfloat)300 / (GLfloat)200, 0.1f, 100.0f);
+		auto proj = perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 
 
 		camera->set_model(rotat);
@@ -215,18 +219,39 @@ int main() {
 
 		auto model = camera->GetModelMatrix();
 		auto view = camera->GetViewMatrix();
-		auto prj = camera->GetProjectionMatrix();*/
+		auto prj = camera->GetProjectionMatrix();
+		auto tr_prj = prj.transposed_mat4();
+		
 
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 projection;
-		model = glm::rotate(model, -55.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		glm::mat4 glm_model (1.0f);
+		glm::mat4 glm_view(1.0f);
+		glm::mat4 glm_projection(1.0f);
+		glm_model = glm::rotate(glm_model, -55.0f, glm::vec3(0.7f, 0.0f, 0.0f));
+		glm_view = glm::translate(glm_view, glm::vec3(0.0f, 0.0f, -3.0f));
+		glm_projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, &view[0][0]);
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, &projection[0][0]);
+		
+
+		auto tr_model = model.transposed_mat4();
+		auto tr_view = view.transposed_mat4();
+		auto tr_projection = prj.transposed_mat4();
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				if (glm_model[i][j] != tr_model.get_value(i, j))
+					std::cout << i << "  " << j << "MODEL" << std::endl;
+				if (glm_view[i][j] != tr_view.get_value(i, j))
+					std::cout << i << "  " << j << "VIEW" << std::endl;
+				if (glm_projection[i][j] != prj.get_value(i, j)) {
+
+					std::cout << i << "  " << j << "VIEW" << std::endl;
+				}
+			}
+		}
+
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, tr_model.begin());
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, tr_view.begin());
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, prj.begin());
 
 		//для отрисовки с EBO ипользуется glDrawElements
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

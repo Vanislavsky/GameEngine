@@ -59,6 +59,8 @@ float mat4::get_value(int row, int col) {
 		return data[row][col];
 }
 
+
+
 void mat4::set_value(float value, int row, int col) {
 	if (row < 4 || col < 4)
 		data[row][col] = value;
@@ -66,6 +68,10 @@ void mat4::set_value(float value, int row, int col) {
 
 float& mat4::operator()(size_t i, size_t j) {
 	return data[i][j];
+}
+
+float* mat4::begin() {
+	return &data[0][0];
 }
 
 mat4 mat4::operator+(const mat4& _mat) {
@@ -285,7 +291,7 @@ mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	first_mat.set_value(-camera_position.get_a3(), 3, 2);
 	first_mat.set_value(1, 3, 3);
 
-	mat4 second_mat(0.0f);
+	/*mat4 second_mat(0.0f);
 
 	second_mat.set_value(1, 0, 0);
 	second_mat.set_value(1, 1, 1);
@@ -295,17 +301,30 @@ mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	second_mat.set_value(-camera_position.get_a2(), 1, 3);
 	second_mat.set_value(-camera_position.get_a3(), 2, 3);
 
-	auto res_mat = first_mat * second_mat;
+	auto res_mat = first_mat * second_mat;*/
 	return first_mat;
 }
 
 mat4 perspective(float fow, float ratio, float near, float far) {
+	float tan_fow =  tan(fow / 2);
+
 	mat4 perspective_mat;
-	perspective_mat.set_value(1 / (ratio * tan(fow / 2)), 0, 0);
-	perspective_mat.set_value(1 / (tan(fow / 2)), 1, 1);
-	perspective_mat.set_value((-near - far) / (near - far), 2, 2);
-	perspective_mat.set_value((2 * far * near) / (near - far), 2, 3);
-	perspective_mat.set_value(1, 3, 2);
+	perspective_mat.set_value(1.0f / (ratio * tan_fow), 0, 0);
+	perspective_mat.set_value(1.0f / (tan_fow), 1, 1);
+	perspective_mat.set_value(- (near + far) / (far - near), 2, 2);
+	perspective_mat.set_value((2 * far * near) / (near - far), 3, 2);
+	perspective_mat.set_value(-1.0f, 2, 3);
 
 	return perspective_mat;
+}
+
+mat4 ortho(float left, float right, float bottom, float top, float near, float far) {
+	mat4 ortho_mat;
+	ortho_mat.set_value(2.0f / (right - left), 0, 0);
+	ortho_mat.set_value(2.0f / (top - bottom), 1, 1);
+	ortho_mat.set_value(-2.0f / (far - near), 2, 2);
+	ortho_mat.set_value(- (far + near) / (far - near), 2, 3);
+	ortho_mat.set_value(1.0f, 3, 3);
+
+	return ortho_mat;
 }
