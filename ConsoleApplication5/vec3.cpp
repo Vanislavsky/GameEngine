@@ -25,7 +25,7 @@ void vec3::set_a1(float _a1) {
 	a1 = _a1;
 }
 
-float vec3::get_a1() {
+float vec3::get_a1() const {
 	return a1;
 }
 
@@ -33,7 +33,7 @@ void vec3::set_a2(float _a2) {
 	a2 = _a2;
 }
 
-float vec3::get_a2() {
+float vec3::get_a2() const {
 	return a2;
 }
 
@@ -41,7 +41,7 @@ void vec3::set_a3(float _a3) {
 	a3 = _a3;
 }
 
-float vec3::get_a3() {
+ float vec3::get_a3() const {
 	return a3;
 }
 

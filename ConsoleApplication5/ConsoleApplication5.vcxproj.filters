@@ -19,6 +19,9 @@
     <Filter Include="tests">
       <UniqueIdentifier>{fa12ec2a-839d-4d8a-8040-977f2bf64254}</UniqueIdentifier>
     </Filter>
+    <Filter Include="camera">
+      <UniqueIdentifier>{f4c03736-b4c4-4cd8-8b50-27050eab0bf0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication5.cpp">
@@ -54,6 +57,9 @@
     <ClCompile Include="opengl_test.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -82,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="math_test.h">
       <Filter>tests</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

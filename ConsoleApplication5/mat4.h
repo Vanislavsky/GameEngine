@@ -15,7 +15,7 @@ public:
 	mat4(const mat4&);
 
 	float get_value(int, int);
-	void set_value(float, int, int);
+	const void set_value(const float, int, int);
 	float& operator()(size_t, size_t);
 	float* begin();
 
@@ -43,7 +43,7 @@ private:
 mat4 unit_mat4();
 mat4 translate(vec3&);
 mat4 scale(vec3&);
-mat4 rotate(float, vec3&);
+mat4 rotate(float, const vec3&);
 mat4 r(vec4& _vec, float angle, vec3& arbitrary_axis);
 
 mat4 look_at(vec3&, vec3&, vec3&);

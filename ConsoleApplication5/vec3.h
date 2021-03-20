@@ -8,9 +8,9 @@ public:
 	vec3(float);
 	vec3(float, float, float);
 
-	float get_a1();
-	float get_a2();
-	float get_a3();
+	float get_a1() const;
+	float get_a2() const;
+	float get_a3() const;
 	void set_a1(float);
 	void set_a2(float);
 	void set_a3(float);

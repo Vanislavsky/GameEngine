@@ -61,7 +61,7 @@ float mat4::get_value(int row, int col) {
 
 
 
-void mat4::set_value(float value, int row, int col) {
+const void mat4::set_value(const float value, int row, int col) {
 	if (row < 4 || col < 4)
 		data[row][col] = value;
 }
@@ -240,7 +240,7 @@ mat4 scale(vec3& scale_vec) {
 	return zoom_mat4;
 }
 
-mat4 rotate(float angle, vec3& arbitrary_axis) {
+mat4 rotate(float angle, const  vec3& arbitrary_axis) {
 	mat4 rotate_mat4;
 
 	auto c = (1 - cos(angle));
@@ -261,7 +261,7 @@ mat4 rotate(float angle, vec3& arbitrary_axis) {
 
 }
 
-mat4 look_at(vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
+mat4 look_at( vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	//vec3 camera_direction = (camera_position - goal_coordinates).normal();
 	//vec3 up = world_up.normal();
 	//vec3 camera_right = camera_direction.vector_product(up).normal();

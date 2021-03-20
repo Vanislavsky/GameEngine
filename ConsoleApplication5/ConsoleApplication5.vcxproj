@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="ConsoleApplication5.cpp" />
     <ClCompile Include="mat2.cpp" />
     <ClCompile Include="mat3.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="vec4.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="mat2.h" />
     <ClInclude Include="mat3.h" />
     <ClInclude Include="mat4.h" />
