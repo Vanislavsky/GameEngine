@@ -312,8 +312,8 @@ mat4 perspective(float fow, float ratio, float near, float far) {
 	perspective_mat.set_value(1.0f / (ratio * tan_fow), 0, 0);
 	perspective_mat.set_value(1.0f / (tan_fow), 1, 1);
 	perspective_mat.set_value(- (near + far) / (far - near), 2, 2);
-	perspective_mat.set_value((2 * far * near) / (near - far), 3, 2);
-	perspective_mat.set_value(-1.0f, 2, 3);
+	perspective_mat.set_value((2 * far * near) / (near - far), 2, 3);
+	perspective_mat.set_value(-1.0f, 3, 2);
 
 	return perspective_mat;
 }
@@ -321,9 +321,12 @@ mat4 perspective(float fow, float ratio, float near, float far) {
 mat4 ortho(float left, float right, float bottom, float top, float near, float far) {
 	mat4 ortho_mat;
 	ortho_mat.set_value(2.0f / (right - left), 0, 0);
+	ortho_mat.set_value(- (right + left) / (right - left), 0, 3);
 	ortho_mat.set_value(2.0f / (top - bottom), 1, 1);
+	ortho_mat.set_value(-(top + bottom) / (top - bottom), 1, 3);
 	ortho_mat.set_value(-2.0f / (far - near), 2, 2);
 	ortho_mat.set_value(- (far + near) / (far - near), 2, 3);
+
 	ortho_mat.set_value(1.0f, 3, 3);
 
 	return ortho_mat;

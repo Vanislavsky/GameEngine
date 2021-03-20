@@ -158,6 +158,7 @@
     <ClInclude Include="mat2.h" />
     <ClInclude Include="mat3.h" />
     <ClInclude Include="mat4.h" />
+    <ClInclude Include="math_test.h" />
     <ClInclude Include="shaderLoader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="vec2.h" />

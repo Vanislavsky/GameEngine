@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{5a7c9eb9-1d29-4318-947e-909c7ea3bbd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{fa12ec2a-839d-4d8a-8040-977f2bf64254}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication5.cpp">
@@ -24,29 +30,29 @@
     <ClCompile Include="shaderLoader.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="vec2.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="vec3.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="vec4.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="mat2.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="mat3.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="mat4.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="vec2.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="vec3.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="vec4.cpp">
+      <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="math_test.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>tests</Filter>
     </ClCompile>
     <ClCompile Include="opengl_test.cpp">
-      <Filter>Исходные файлы</Filter>
+      <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,23 +62,26 @@
     <ClInclude Include="shaderLoader.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="vec2.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="vec3.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="vec4.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="mat2.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="mat3.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="mat4.h">
-      <Filter>Файлы заголовков</Filter>
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="vec2.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="vec4.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="math_test.h">
+      <Filter>tests</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

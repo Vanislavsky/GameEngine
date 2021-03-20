@@ -19,7 +19,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include"opengl_test.cpp"
+#include"math_test.h"
 
 // Интерфейс можно менять как угодно
 class Camera {
@@ -80,186 +80,186 @@ private:
 
 int main() {
 	
-	//test();
-	sf::ContextSettings settings;
-	settings.depthBits = 24; // количество битов буффера глубины
-	settings.stencilBits = 8; //количество битов буфера трафарета, используется с буфером глубины для ограничения области рендеринга
-	settings.majorVersion = 4;
-	settings.minorVersion = 3;
-	settings.attributeFlags = sf::ContextSettings::Core;
+	test();
+	//sf::ContextSettings settings;
+	//settings.depthBits = 24; // количество битов буффера глубины
+	//settings.stencilBits = 8; //количество битов буфера трафарета, используется с буфером глубины для ограничения области рендеринга
+	//settings.majorVersion = 4;
+	//settings.minorVersion = 3;
+	//settings.attributeFlags = sf::ContextSettings::Core;
 
-	//sf::VideoMode(ширина, высота, кол-во бидля для цвета на 1 пиксель)
-	sf::Window window(sf::VideoMode(800, 600, 32), "First Window",
-		sf::Style::Titlebar | sf::Style::Close);
+	////sf::VideoMode(ширина, высота, кол-во бидля для цвета на 1 пиксель)
+	//sf::Window window(sf::VideoMode(800, 600, 32), "First Window",
+	//	sf::Style::Titlebar | sf::Style::Close);
 
-	glewExperimental = GL_TRUE; // включить все современные функции ogl
+	//glewExperimental = GL_TRUE; // включить все современные функции ogl
 
-	if (GLEW_OK != glewInit()) { // включить glew
-		std::cout << "Error:: glew not init =(" << std::endl;
-		return -1;
-	}
+	//if (GLEW_OK != glewInit()) { // включить glew
+	//	std::cout << "Error:: glew not init =(" << std::endl;
+	//	return -1;
+	//}
 
-	auto shaderProgram = LoadShaders("C:/Users/79242/Desktop/res/shaders/e4.vs", "C:/Users/79242/Desktop/res/shaders/e4.fs");
+	//auto shaderProgram = LoadShaders("C:/Users/79242/Desktop/res/shaders/e4.vs", "C:/Users/79242/Desktop/res/shaders/e4.fs");
 
-	Camera* camera = new Camera();
+	//Camera* camera = new Camera();
 
-	float vertices[] = {
-		//x      y     z      u     v
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // левая нижняя
-		-0.5f, 0.5f, 0.0f,   0.0f, 1.0f,// левая верхняя
-		 0.5f, 0.5f, 0.0f,   1.0f, 1.0f,// правая верхняя
-		 0.5f, -0.5f, 0.0f,  1.0f, 0.0f // правая нижняя
-	};
+	//float vertices[] = {
+	//	//x      y     z      u     v
+	//	-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, // левая нижняя
+	//	-0.5f, 0.5f, 0.0f,   0.0f, 1.0f,// левая верхняя
+	//	 0.5f, 0.5f, 0.0f,   1.0f, 1.0f,// правая верхняя
+	//	 0.5f, -0.5f, 0.0f,  1.0f, 0.0f // правая нижняя
+	//};
 
-	//EBO позволит использовать одни и те же вершины в разных треугольниках
-	unsigned int indices[] = {
-		0, 1, 3, // первый треугольник
-		1, 2, 3  // второй треугольник
-	};
+	////EBO позволит использовать одни и те же вершины в разных треугольниках
+	//unsigned int indices[] = {
+	//	0, 1, 3, // первый треугольник
+	//	1, 2, 3  // второй треугольник
+	//};
 
-	unsigned int VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO); // сгенерили id для массивов вершин (у нас это один id)
-	glBindVertexArray(VAO); // и связали массив с opengl
+	//unsigned int VBO, VAO, EBO;
+	//glGenVertexArrays(1, &VAO); // сгенерили id для массивов вершин (у нас это один id)
+	//glBindVertexArray(VAO); // и связали массив с opengl
 
-	glGenBuffers(1, &VBO); // сгенерили буфер данных размером 1
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);// и связали буфер с opengl
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // прокинули наш масив вершин в opengl
+	//glGenBuffers(1, &VBO); // сгенерили буфер данных размером 1
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);// и связали буфер с opengl
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // прокинули наш масив вершин в opengl
 
-	//Создали и связали EBO
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	////Создали и связали EBO
+	//glGenBuffers(1, &EBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // прописали параметры для объекта
-	glEnableVertexAttribArray(0); //тк layout у позиции 0
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0); // прописали параметры для объекта
+	//glEnableVertexAttribArray(0); //тк layout у позиции 0
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-
-	// Загрузка и создание текстуры
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture); // все последующие GL_TEXTURE_2D-операции теперь будут влиять на данный текстурный объект
-
-	// Установка параметров наложения текстуры
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // установка метода наложения текстуры GL_REPEAT (стандартный метод наложения)
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Установка параметров фильтрации текстуры
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Загрузка изображения, создание текстуры и генерирование мипмап-уровней
-	int width, height, nrChannels;
-	/*
-	 * По дефолту текстура перевернута вверх ногами.
-	 * Это происходит потому, что OpenGL ожидает, что координата 0.0 на оси Y будет
-	 * находиться в нижней части изображения, но изображения обычно имеют 0.0 в верхней
-	 * части оси Y. stbi_set_flip_vertically_on_load исправит это!
-	 */
-	stbi_set_flip_vertically_on_load(true);
-
-	unsigned char* data = stbi_load("C:/Users/79242/Desktop/res/imgs/1.jpg", &width, &height, &nrChannels, 0);
-	if (data) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else {
-		std::cout << "Failed to load texture" << std::endl;
-	}
-	stbi_image_free(data);
-
-	// цикл рендера
-	bool isGo = true;
-	while (isGo) {
-
-		// обработка ивентов от SFML (тут и мышь и клавиши обрабатываются)
-		sf::Event windowEvent;
-		while (window.pollEvent(windowEvent)) { // обработка ивентов
-
-			//<YOUR CODE>
-
-				//обработка клавиш и обновление позиции камеры
-				//обработка мыши и обновления повотора камеры например с помошью углов эйлера
-			switch (windowEvent.type) {
-			case sf::Event::Closed:
-				isGo = false;
-				break;
-			default:
-				break;
-			}
-		}
-
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //задали цвет отчистки
-		glClear(GL_COLOR_BUFFER_BIT);                      //отчистка экрана
-
-		glBindTexture(GL_TEXTURE_2D, texture); //связали текстуру
-
-		glUseProgram(shaderProgram); // установили нужную шейдерную программу
-		glBindVertexArray(VAO);      // установили нужный массив для рендеринга
-		//glDrawArrays(GL_TRIANGLES, 0, 6); //отрисовали
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glBindVertexArray(0);
 
 
-		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
-		auto rotat = rotate(-55.0f, rotate_vec);
+	//// Загрузка и создание текстуры
+	//unsigned int texture;
+	//glGenTextures(1, &texture);
+	//glBindTexture(GL_TEXTURE_2D, texture); // все последующие GL_TEXTURE_2D-операции теперь будут влиять на данный текстурный объект
 
-		vec3 trans_vec(0.0f, 0.0f, -3.0f);
-		auto trans = translate(trans_vec);
+	//// Установка параметров наложения текстуры
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // установка метода наложения текстуры GL_REPEAT (стандартный метод наложения)
+	////glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-		auto proj = perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+	//// Установка параметров фильтрации текстуры
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//// Загрузка изображения, создание текстуры и генерирование мипмап-уровней
+	//int width, height, nrChannels;
+	///*
+	// * По дефолту текстура перевернута вверх ногами.
+	// * Это происходит потому, что OpenGL ожидает, что координата 0.0 на оси Y будет
+	// * находиться в нижней части изображения, но изображения обычно имеют 0.0 в верхней
+	// * части оси Y. stbi_set_flip_vertically_on_load исправит это!
+	// */
+	//stbi_set_flip_vertically_on_load(true);
+
+	//unsigned char* data = stbi_load("C:/Users/79242/Desktop/res/imgs/1.jpg", &width, &height, &nrChannels, 0);
+	//if (data) {
+	//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	//	glGenerateMipmap(GL_TEXTURE_2D);
+	//}
+	//else {
+	//	std::cout << "Failed to load texture" << std::endl;
+	//}
+	//stbi_image_free(data);
+
+	//// цикл рендера
+	//bool isGo = true;
+	//while (isGo) {
+
+	//	// обработка ивентов от SFML (тут и мышь и клавиши обрабатываются)
+	//	sf::Event windowEvent;
+	//	while (window.pollEvent(windowEvent)) { // обработка ивентов
+
+	//		//<YOUR CODE>
+
+	//			//обработка клавиш и обновление позиции камеры
+	//			//обработка мыши и обновления повотора камеры например с помошью углов эйлера
+	//		switch (windowEvent.type) {
+	//		case sf::Event::Closed:
+	//			isGo = false;
+	//			break;
+	//		default:
+	//			break;
+	//		}
+	//	}
+
+	//	glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //задали цвет отчистки
+	//	glClear(GL_COLOR_BUFFER_BIT);                      //отчистка экрана
+
+	//	glBindTexture(GL_TEXTURE_2D, texture); //связали текстуру
+
+	//	glUseProgram(shaderProgram); // установили нужную шейдерную программу
+	//	glBindVertexArray(VAO);      // установили нужный массив для рендеринга
+	//	//glDrawArrays(GL_TRIANGLES, 0, 6); //отрисовали
 
 
-		camera->set_model(rotat);
-		camera->set_projection(proj);
-		camera->set_view(trans);
+	//	vec3 rotate_vec(1.0f, 0.0f, 0.0f);
+	//	auto rotat = rotate(-55.0f, rotate_vec);
 
-		auto model = camera->GetModelMatrix();
-		auto view = camera->GetViewMatrix();
-		auto prj = camera->GetProjectionMatrix();
-		auto tr_prj = prj.transposed_mat4();
-		
+	//	vec3 trans_vec(0.0f, 0.0f, -3.0f);
+	//	auto trans = translate(trans_vec);
 
-		glm::mat4 glm_model (1.0f);
-		glm::mat4 glm_view(1.0f);
-		glm::mat4 glm_projection(1.0f);
-		glm_model = glm::rotate(glm_model, -55.0f, glm::vec3(0.7f, 0.0f, 0.0f));
-		glm_view = glm::translate(glm_view, glm::vec3(0.0f, 0.0f, -3.0f));
-		glm_projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
-
-		
-
-		auto tr_model = model.transposed_mat4();
-		auto tr_view = view.transposed_mat4();
-		auto tr_projection = prj.transposed_mat4();
-
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				if (glm_model[i][j] != tr_model.get_value(i, j))
-					std::cout << i << "  " << j << "MODEL" << std::endl;
-				if (glm_view[i][j] != tr_view.get_value(i, j))
-					std::cout << i << "  " << j << "VIEW" << std::endl;
-				if (glm_projection[i][j] != prj.get_value(i, j)) {
-
-					std::cout << i << "  " << j << "VIEW" << std::endl;
-				}
-			}
-		}
-
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, tr_model.begin());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, tr_view.begin());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, prj.begin());
-
-		//для отрисовки с EBO ипользуется glDrawElements
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		window.display();
-	}
+	//	auto proj = perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 
 
-	window.close();
+	//	camera->set_model(rotat);
+	//	camera->set_projection(proj);
+	//	camera->set_view(trans);
+
+	//	auto model = camera->GetModelMatrix();
+	//	auto view = camera->GetViewMatrix();
+	//	auto prj = camera->GetProjectionMatrix();
+	//	auto tr_prj = prj.transposed_mat4();
+	//	
+
+	//	glm::mat4 glm_model (1.0f);
+	//	glm::mat4 glm_view(1.0f);
+	//	glm::mat4 glm_projection(1.0f);
+	//	glm_model = glm::rotate(glm_model, -55.0f, glm::vec3(0.7f, 0.0f, 0.0f));
+	//	glm_view = glm::translate(glm_view, glm::vec3(0.0f, 0.0f, -3.0f));
+	//	glm_projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+
+	//	
+
+	//	auto tr_model = model.transposed_mat4();
+	//	auto tr_view = view.transposed_mat4();
+	//	auto tr_projection = prj.transposed_mat4();
+
+	//	for (int i = 0; i < 4; i++) {
+	//		for (int j = 0; j < 4; j++) {
+	//			if (glm_model[i][j] != tr_model.get_value(i, j))
+	//				std::cout << i << "  " << j << "MODEL" << std::endl;
+	//			if (glm_view[i][j] != tr_view.get_value(i, j))
+	//				std::cout << i << "  " << j << "VIEW" << std::endl;
+	//			if (glm_projection[i][j] != prj.get_value(i, j)) {
+
+	//				std::cout << i << "  " << j << "VIEW" << std::endl;
+	//			}
+	//		}
+	//	}
+
+	//	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, tr_model.begin());
+	//	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, tr_view.begin());
+	//	glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, prj.begin());
+
+	//	//для отрисовки с EBO ипользуется glDrawElements
+	//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	//	window.display();
+	//}
+
+
+	//window.close();
 	return 0;
 }

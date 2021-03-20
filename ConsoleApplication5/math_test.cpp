@@ -1,21 +1,6 @@
-#include <iostream>
-#include <cassert>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include"mat3.h"
-#include"vec2.h"
-#include"vec3.h"
-#include"vec4.h"
-#include"mat2.h"
-#include"mat3.h"
-#include"mat4.h"
-#include<glm/mat2x2.hpp>
-#include<glm/mat3x3.hpp>
-#include<glm/mat4x4.hpp>
-#include<glm/vec3.hpp>
-#include<glm/vec4.hpp>
-
+#include"math_test.h"
+//glew
+#include <GL/glew.h>
 
 void test_vec2() {
     double eps = 1e-7;
@@ -394,6 +379,62 @@ void test_mat2() {
     }
 }
 
+void test_mat3() {
+    {
+        mat3 mat({ 10, 20, 30, 40, 33, 56, 76, 88, 11});
+        glm::mat3x3 glm_mat(10, 20, 30, 40, 33, 56, 76, 88, 11);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                assert(mat.get_value(i, j) == glm_mat[i][j]);
+            }
+        }
+
+        mat3 mat_2({ 10.6f, 20.2f, 130, 140, 3, 56.7f, 76.7f, 88.7f, 131});
+        glm::mat3x3 glm_mat_2(10.6f, 20.2f, 130, 140, 3, 56.7f, 76.7f, 88.7f, 131);
+        {
+            auto res_mat = mat + mat_2;
+            auto glm_res_mat = glm_mat_2 + glm_mat;
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    assert(res_mat.get_value(i, j) == glm_res_mat[i][j]);
+                }
+            }
+        }
+
+        {
+            auto res_mat = mat * mat_2;
+            auto glm_res_mat = glm_mat_2 * glm_mat;
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    assert(res_mat.get_value(i, j) == glm_res_mat[i][j]);
+                }
+            }
+        }
+
+        {
+            vec3  vec({ 120.6f, 77.5f, 11.4f});
+            glm::vec3 glm_vec(120.6f, 77.5f, 11.4f);
+            auto res_mat = mat * vec;
+            auto glm_res_mat = glm_vec * glm_mat;
+
+            assert(res_mat.get_a1() == glm_res_mat.x);
+            assert(res_mat.get_a2() == glm_res_mat.y);
+        }
+
+        {
+            auto res_mat = mat.transposed_mat3();
+            auto glm_res_mat = glm::transpose(glm_mat);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    assert(res_mat.get_value(i, j) == glm_res_mat[i][j]);
+                }
+            }
+        }
+    }
+}
+
 void test_translate() {
 
     {
@@ -507,24 +548,6 @@ void test_rotate() {
 
         vec3 tr_vec({ 0.0, 0.0, 1.0 });
         auto res_math = rotate(90.0f, tr_vec);
-        auto res = res_math * vec_2;
-
-        assert(res.get_a1() == vec.x);
-        assert(res.get_a2() == vec.y);
-        assert(res.get_a3() == vec.z);
-
-    }
-
-    {
-        glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-        glm::mat4 trans(1.0f);
-        trans = glm::rotate(trans, 60.0f, glm::vec3(0.662, 0.2, 0.722));
-        vec = trans * vec;
-
-        vec4 vec_2(1.0f, 0.0f, 0.0f, 1.0f);
-
-        vec3 tr_vec({ 0.662, 0.2, 0.722 });
-        auto res_math = rotate(60.0f, tr_vec);
         auto res = res_math * vec_2;
 
         assert(res.get_a1() == vec.x);
@@ -647,15 +670,50 @@ void test_look_at() {
 
 }
 
+void test_ortho() {
+    auto proj = ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+    auto tr_proj = proj.transposed_mat4();
+ 
+    auto glm_projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tr_proj.get_value(i, j) != glm_projection[i][j]) {
+                std::cout<< tr_proj.get_value(i, j) << " " << glm_projection[i][j] << "  " << i << "  " << j << std::endl;
+            }
+        }
+    }
+
+}
+
+
+void test_perspective() {
+    auto proj = perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+    auto tr_proj = proj.transposed_mat4();
+
+    auto glm_projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            assert(tr_proj.get_value(i, j) == glm_projection[i][j]);
+        }
+    }
+
+
+}
+
 void test() {
     test_vec2();
     test_vec3();
     test_vec4();
     test_mat2();
+    test_mat3();
     test_mat4();
     test_translate();
     test_scale();
     test_look_at();
     test_rotate();
+    test_ortho();
+    test_perspective();
     std::cout << "ALL TEST COMPLETED!!!" << std::endl;
 }
