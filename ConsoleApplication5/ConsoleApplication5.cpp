@@ -24,6 +24,15 @@
 
 #include"camera.h"
 
+void mouse_movement(camera& cam, float xpos, float ypos);
+
+
+GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
+GLfloat pitch = 0.0f;
+GLfloat lastX = 800 / 2.0;
+GLfloat lastY = 600 / 2.0;
+bool firstMouse = true;
+
 
 int main() {
 
@@ -39,6 +48,7 @@ int main() {
 		sf::Style::Titlebar | sf::Style::Close);
 
 	glewExperimental = GL_TRUE; // включить все современные функции ogl
+
 
 	if (GLEW_OK != glewInit()) { // включить glew
 		std::cout << "Error:: glew not init =(" << std::endl;
@@ -165,6 +175,10 @@ int main() {
 					camera.set_postion(camera.get_position() + pos_add);
 				}
 				break;
+
+			case sf::Event::MouseMoved:
+				mouse_movement(camera, windowEvent.mouseMove.x, windowEvent.mouseMove.y);
+				break;
 			default:
 				break;
 			}
@@ -238,4 +252,41 @@ int main() {
 
 	window.close();
 	return 0;
+}
+
+
+void mouse_movement(camera& cam,float xpos, float ypos) {
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	/*GLfloat xoffset = xpos - lastX;
+	GLfloat yoffset = lastY - ypos;*/
+	GLfloat xoffset = lastX - xpos;
+	GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
+	lastX = xpos;
+	lastY = ypos;
+
+	GLfloat sensitivity = 0.05;	// Change this value to your liking
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	// Make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	vec3 front;
+	front.set_a1(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	front.set_a2(sin(glm::radians(pitch)));
+	front.set_a3(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+
+	cam.set_front(front.normal());
 }
