@@ -9,6 +9,7 @@
 
 //sfml
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 
 
 #include "stb_image.h"
@@ -48,10 +49,13 @@ int main() {
 
 	camera camera;
 	//float fow, float ratio, float near, float far
-	camera.set_fov(45.0f);
+	camera.set_fov(glm::radians(45.0f));
 	camera.set_ratio((GLfloat)800 / (GLfloat)600);
 	camera.set_near(0.1f);
 	camera.set_far(100.0f);
+	camera.set_postion({ 0.0f, 0.0f,  3.0f });
+	camera.set_front({ 0.0f, 0.0f, -1.0f });
+	camera.set_up({ 0.0f, 1.0f, 0.0f });
 
 	float vertices[] = {
 		//x      y     z      u     v
@@ -135,13 +139,36 @@ int main() {
 
 				//обработка клавиш и обновление позиции камеры
 				//обработка мыши и обновления повотора камеры например с помошью углов эйлера
+			GLfloat cameraSpeed = 0.05f;
 			switch (windowEvent.type) {
 			case sf::Event::Closed:
 				isGo = false;
 				break;
+			case sf::Event::KeyPressed:
+				if (windowEvent.key.code == sf::Keyboard::W) {
+					auto pos_add = camera.get_front() * cameraSpeed;
+					camera.set_postion(camera.get_position() + pos_add);
+				}
+
+				if (windowEvent.key.code == sf::Keyboard::S) {
+					auto pos_min = camera.get_front() * cameraSpeed;
+					camera.set_postion(camera.get_position() - pos_min);
+				}
+
+				if (windowEvent.key.code == sf::Keyboard::A) {
+					auto pos_min = camera.get_front().vector_product(camera.get_up()).normal() * cameraSpeed;
+					camera.set_postion(camera.get_position() - pos_min);
+				}
+
+				if (windowEvent.key.code == sf::Keyboard::D) {
+					auto pos_add = camera.get_front().vector_product(camera.get_up()).normal() * cameraSpeed;
+					camera.set_postion(camera.get_position() + pos_add);
+				}
+				break;
 			default:
 				break;
 			}
+
 		}
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); //задали цвет отчистки
@@ -154,26 +181,32 @@ int main() {
 		//glDrawArrays(GL_TRIANGLES, 0, 6); //отрисовали
 
 
-		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
+		vec3 rotate_vec(0.7f, 0.0f, 0.0f);
 		auto rotat = rotate(-55.0f, rotate_vec);
+		auto ces = rotat.transposed_mat4();
 
 		vec3 trans_vec(0.0f, 0.0f, -3.0f);
 		auto trans = translate(trans_vec);
 
-		auto proj = perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 
 
-		auto model = camera.get_model_matrix(-55.0f, { 0.7f, 0.0f, 0.0f });
+		auto model = camera.get_model_matrix(glm::radians(-55.0f), { 1.0f, 0.0f, 0.0f });
+		//auto view = camera.get_translate_matrix(trans_vec);
 		auto view = camera.get_view_matrix();
 		auto prj = camera.get_projection_matrix();
 		
 
+		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+		glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
 		glm::mat4 glm_model (1.0f);
 		glm::mat4 glm_view(1.0f);
 		glm::mat4 glm_projection(1.0f);
-		glm_model = glm::rotate(glm_model, -55.0f, glm::vec3(0.7f, 0.0f, 0.0f));
-		glm_view = glm::translate(glm_view, glm::vec3(0.0f, 0.0f, -3.0f));
-		glm_projection = glm::perspective(45.0f, (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		glm_model = glm::rotate(glm_model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glm_view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		glm_projection = glm::perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 
 		
 
@@ -181,22 +214,20 @@ int main() {
 		auto tr_view = view.transposed_mat4();
 		auto tr_projection = prj.transposed_mat4();
 
-		for (int i = 0; i < 4; i++) {
+		vec3 sc_vec(0.5, 0.5, 0.5);
+		auto sc = scale(sc_vec);
+		auto tr_sc = sc.transposed_mat4();
+
+		/*for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
-				if (glm_model[i][j] != tr_model.get_value(i, j))
-					std::cout << i << "  " << j << "MODEL" << std::endl;
-				if (glm_view[i][j] != tr_view.get_value(i, j))
+				if (glm_view[i][j] != view.get_value(i, j))
 					std::cout << i << "  " << j << "VIEW" << std::endl;
-				if (glm_projection[i][j] != prj.get_value(i, j)) {
-
-					std::cout << i << "  " << j << "VIEW" << std::endl;
-				}
 			}
-		}
+		}*/
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, tr_model.begin());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, tr_view.begin());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, prj.begin());
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_TRUE, model.transform_for_shader());
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, view.transform_for_shader());
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_TRUE, prj.transform_for_shader());
 
 		//для отрисовки с EBO ипользуется glDrawElements
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

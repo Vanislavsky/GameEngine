@@ -70,8 +70,19 @@ float& mat4::operator()(size_t i, size_t j) {
 	return data[i][j];
 }
 
-float* mat4::begin() {
-	return &data[0][0];
+float* mat4::transform_for_shader() {
+	//std::vector<float> res();
+	int z = 0;
+	auto res = new float[16];
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			res[z] = data[i][j];
+			z++;
+			//res.push_back(data[i][j]);
+		}
+	}
+	return res;
+	//return &data[0][0];
 }
 
 mat4 mat4::operator+(const mat4& _mat) {
@@ -306,12 +317,12 @@ mat4 look_at( vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 }
 
 mat4 perspective(float fow, float ratio, float near, float far) {
-	float tan_fow =  tan(fow / 2);
-
+	float tan_fow =  tan(fow / 2.0f);
+	auto a = 1.0f / (ratio * tan_fow);
 	mat4 perspective_mat;
 	perspective_mat.set_value(1.0f / (ratio * tan_fow), 0, 0);
 	perspective_mat.set_value(1.0f / (tan_fow), 1, 1);
-	perspective_mat.set_value(- (near + far) / (far - near), 2, 2);
+	perspective_mat.set_value(- (float)(near + far) / (float)(far - near), 2, 2);
 	perspective_mat.set_value((2 * far * near) / (near - far), 2, 3);
 	perspective_mat.set_value(-1.0f, 3, 2);
 

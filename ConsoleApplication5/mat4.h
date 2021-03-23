@@ -17,7 +17,7 @@ public:
 	float get_value(int, int);
 	const void set_value(const float, int, int);
 	float& operator()(size_t, size_t);
-	float* begin();
+	float* transform_for_shader();
 
 	mat4 operator+(const mat4&);
 	mat4 operator-(const mat4&);
