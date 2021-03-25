@@ -60,6 +60,9 @@
     <ClCompile Include="camera.cpp">
       <Filter>camera</Filter>
     </ClCompile>
+    <ClCompile Include="shader_wrapper.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -91,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="camera.h">
       <Filter>camera</Filter>
+    </ClInclude>
+    <ClInclude Include="shader_wrapper.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

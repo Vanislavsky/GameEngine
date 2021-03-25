@@ -150,6 +150,7 @@
     <ClCompile Include="math_test.cpp" />
     <ClCompile Include="opengl_test.cpp" />
     <ClCompile Include="shaderLoader.cpp" />
+    <ClCompile Include="shader_wrapper.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="vec3.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="mat4.h" />
     <ClInclude Include="math_test.h" />
     <ClInclude Include="shaderLoader.h" />
+    <ClInclude Include="shader_wrapper.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="vec3.h" />

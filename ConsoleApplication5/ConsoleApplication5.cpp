@@ -3,6 +3,7 @@
 #pragma once
 
 #include <iostream>
+#include<string>
 
 //glew
 #include <GL/glew.h>
@@ -23,6 +24,8 @@
 #include"math_test.h"
 
 #include"camera.h"
+#include"shader_wrapper.h"
+
 
 void mouse_movement(camera& cam, float xpos, float ypos);
 
@@ -55,7 +58,9 @@ int main() {
 		return -1;
 	}
 
-	auto shaderProgram = LoadShaders("C:/Users/79242/Desktop/res/shaders/e4.vs", "C:/Users/79242/Desktop/res/shaders/e4.fs");
+	std::string vertex_shader_path("C:/Users/79242/Desktop/res/shaders/e4.vs");
+	std::string fragment_shader_path("C:/Users/79242/Desktop/res/shaders/e4.fs");
+	shader_wrapper shader_program(vertex_shader_path, fragment_shader_path);
 
 	camera camera;
 	//float fow, float ratio, float near, float far
@@ -190,7 +195,7 @@ int main() {
 
 		glBindTexture(GL_TEXTURE_2D, texture); //связали текстуру
 
-		glUseProgram(shaderProgram); // установили нужную шейдерную программу
+		shader_program.use();
 		glBindVertexArray(VAO);      // установили нужный массив для рендеринга
 		//glDrawArrays(GL_TRIANGLES, 0, 6); //отрисовали
 
@@ -239,9 +244,10 @@ int main() {
 			}
 		}*/
 
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_TRUE, model.transform_for_shader());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, view.transform_for_shader());
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_TRUE, prj.transform_for_shader());
+
+		shader_program.set_mat4("model", model, true);
+		shader_program.set_mat4("view", view, false);
+		shader_program.set_mat4("projection", prj, true);
 
 		//для отрисовки с EBO ипользуется glDrawElements
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -263,10 +269,10 @@ void mouse_movement(camera& cam,float xpos, float ypos) {
 		firstMouse = false;
 	}
 
-	/*GLfloat xoffset = xpos - lastX;
-	GLfloat yoffset = lastY - ypos;*/
-	GLfloat xoffset = lastX - xpos;
-	GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
+	GLfloat xoffset = xpos - lastX;
+	GLfloat yoffset = lastY - ypos;
+	//GLfloat xoffset = lastX - xpos;
+	//GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
 	lastX = xpos;
 	lastY = ypos;
 
