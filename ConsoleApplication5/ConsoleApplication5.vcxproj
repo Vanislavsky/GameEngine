@@ -174,6 +174,10 @@
     <None Include="..\..\..\..\Desktop\res\shaders\e2.vs" />
     <None Include="..\..\..\..\Desktop\res\shaders\e4.fs" />
     <None Include="..\..\..\..\Desktop\res\shaders\e4.vs" />
+    <None Include="light_cube.fs" />
+    <None Include="light_cube.vs" />
+    <None Include="light_casters.fs" />
+    <None Include="light_casters.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg" />

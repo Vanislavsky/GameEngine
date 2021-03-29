@@ -15,6 +15,7 @@ public:
 	void set_a2(float);
 	void set_a3(float);
 
+	float* transform_for_shader() const;
 
 	vec3 operator+(const vec3&);
 	vec3 operator-(const vec3&);

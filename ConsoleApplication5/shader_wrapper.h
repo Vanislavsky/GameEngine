@@ -13,6 +13,9 @@ public:
 
 	void use();
 	void set_mat4(const GLchar*, mat4&, bool);
+	void set_int(const std::string& name, int value);
+	void set_vec3(const std::string& name, const vec3& value);
+	void set_float(const std::string& name, float value);
 
 private:
 	GLuint shader_id;

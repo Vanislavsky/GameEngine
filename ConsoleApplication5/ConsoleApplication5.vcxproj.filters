@@ -22,6 +22,9 @@
     <Filter Include="camera">
       <UniqueIdentifier>{f4c03736-b4c4-4cd8-8b50-27050eab0bf0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{01dbc396-9f6b-451e-9ce3-90c9f135911d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication5.cpp">
@@ -111,6 +114,18 @@
     </None>
     <None Include="..\..\..\..\Desktop\res\shaders\e2.vs">
       <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="light_casters.vs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="light_casters.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="light_cube.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="light_cube.vs">
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

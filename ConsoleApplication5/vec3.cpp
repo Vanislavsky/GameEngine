@@ -45,6 +45,15 @@ void vec3::set_a3(float _a3) {
 	return a3;
 }
 
+ float* vec3::transform_for_shader() const {
+	 int z = 0;
+	 auto res = new float[3];
+	 res[0] = a1;
+	 res[1] = a2;
+	 res[2] = a3;
+	 return res;
+ }
+
 
 vec3 vec3::operator+(const vec3& _vec) {
 	return { a1 + _vec.a1, a2 + _vec.a2, a3 + _vec.a3 };
