@@ -178,9 +178,13 @@
     <None Include="light_cube.vs" />
     <None Include="light_casters.fs" />
     <None Include="light_casters.vs" />
+    <None Include="multieple_lights.fs" />
+    <None Include="multieple_lights.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\container_2_specular.png" />
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg" />
+    <Image Include="..\..\..\..\Desktop\wooden_container_2.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

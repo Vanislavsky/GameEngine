@@ -1,4 +1,6 @@
 #include "camera.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 camera::camera() {
 
@@ -68,4 +70,15 @@ mat4 camera::get_model_matrix(float angle, const vec3& arbitrary_unit) const {
 
 mat4 camera::get_translate_matrix(vec3& translate_vec) const {
 	return translate(translate_vec);
+}
+
+void camera::update_canera_vectors() {
+	vec3 new_front;
+	new_front.set_a1(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	new_front.set_a2(sin(glm::radians(pitch)));
+	new_front.set_a3(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+
+	front = new_front.normal();
+	right = front.vector_product(world_up).normal();
+	up = right.vector_product(front).normal();
 }

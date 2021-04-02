@@ -29,13 +29,20 @@ public:
 	mat4 get_view_matrix();
 	mat4 get_model_matrix(float, const vec3&) const;
 	mat4 get_translate_matrix(vec3&) const;
-private:
+public:
 	
 	vec3 position;
 	vec3 front = {0.0, 0.0, 0.0};
 	vec3 up = {0.0f, 1.0f, 0.0f};
+	vec3 right;
+	vec3 world_up;
 	float m_fov;
 	float m_ratio;
 	float m_near;
 	float m_far;
+
+	float yaw;
+	float pitch;
+
+	void update_canera_vectors();
 };
