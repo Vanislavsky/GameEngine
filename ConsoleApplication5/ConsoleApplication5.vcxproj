@@ -183,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\container_2_specular.png" />
+    <Image Include="..\..\..\..\Desktop\P163301-4-zoom-1.jpg" />
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg" />
     <Image Include="..\..\..\..\Desktop\wooden_container_2.png" />
   </ItemGroup>

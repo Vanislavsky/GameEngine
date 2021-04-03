@@ -144,5 +144,8 @@
     <Image Include="..\..\..\..\Desktop\container_2_specular.png">
       <Filter>Файлы ресурсов</Filter>
     </Image>
+    <Image Include="..\..\..\..\Desktop\P163301-4-zoom-1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
   </ItemGroup>
 </Project>

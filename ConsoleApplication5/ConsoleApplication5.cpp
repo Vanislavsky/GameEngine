@@ -172,7 +172,7 @@ int main() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	unsigned int diffuseMap = loadTexture("../../../../Desktop/wooden_container_2.png");
+	unsigned int diffuseMap = loadTexture("../../../../Desktop/P163301-4-zoom-1.jpg");
 	unsigned int specularMap = loadTexture("../../../../Desktop/container_2_specular.png");
 
 	lightingShader.use();
@@ -230,7 +230,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                      //отчистка экрана
 		lightingShader.use();
 		lightingShader.set_vec3("viewPos", camera.get_position());
-		lightingShader.set_float("material.shininess", 32.0f);
+		lightingShader.set_float("material.shininess", 0.6f);
 
 
 		// Направленный свет
@@ -328,6 +328,8 @@ int main() {
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			mat4 light_model = translate(pointLightPositions[i]);
+			vec3 scale_vec(0.4, 0.4, 0.4);
+			light_model = light_model * scale(scale_vec);
 			lightCubeShader.set_mat4("model", light_model, true);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
