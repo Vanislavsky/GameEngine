@@ -25,6 +25,7 @@
 
 #include"camera.h"
 #include"shader_wrapper.h"
+#include"material.h"
 
 unsigned int loadTexture(const char* path);
 void mouse_movement(camera& cam, float xpos, float ypos);
@@ -58,10 +59,6 @@ int main() {
 		return -1;
 	}
 
-	/*std::string vertex_shader_path("C:/Users/79242/Desktop/res/shaders/e4.vs");
-	std::string fragment_shader_path("C:/Users/79242/Desktop/res/shaders/e4.fs");
-	shader_wrapper shader_program(vertex_shader_path, fragment_shader_path);*/
-
 	shader_wrapper lightingShader("multieple_lights.vs", "multieple_lights.fs");
 	shader_wrapper lightCubeShader("light_cube.vs", "light_cube.fs");
 
@@ -74,6 +71,8 @@ int main() {
 	camera.set_postion({ 0.0f, 0.0f,  3.0f });
 	camera.set_front({ 0.0f, 0.0f, -1.0f });
 	camera.set_up({ 0.0f, 1.0f, 0.0f });
+
+	material emerald(0, 1, 0.6f);
 
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -176,8 +175,8 @@ int main() {
 	unsigned int specularMap = loadTexture("../../../../Desktop/container_2_specular.png");
 
 	lightingShader.use();
-	lightingShader.set_int("material.diffuse", 0);
-	lightingShader.set_int("material.specular", 1);
+	lightingShader.set_int("material.diffuse", emerald.get_diffuse());
+	lightingShader.set_int("material.specular", emerald.get_specular());
 	// цикл рендера
 	bool isGo = true;
 	while (isGo) {
@@ -227,10 +226,10 @@ int main() {
 		}
 
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //задали цвет отчистки
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);                      //отчистка экрана
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //отчистка экрана
 		lightingShader.use();
 		lightingShader.set_vec3("viewPos", camera.get_position());
-		lightingShader.set_float("material.shininess", 0.6f);
+		lightingShader.set_float("material.shininess", emerald.get_shininess());
 
 
 		// Направленный свет

@@ -144,9 +144,11 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ConsoleApplication5.cpp" />
+    <ClCompile Include="light_source.cpp" />
     <ClCompile Include="mat2.cpp" />
     <ClCompile Include="mat3.cpp" />
     <ClCompile Include="mat4.cpp" />
+    <ClCompile Include="material.cpp" />
     <ClCompile Include="math_test.cpp" />
     <ClCompile Include="opengl_test.cpp" />
     <ClCompile Include="shaderLoader.cpp" />
@@ -158,9 +160,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="light_source.h" />
     <ClInclude Include="mat2.h" />
     <ClInclude Include="mat3.h" />
     <ClInclude Include="mat4.h" />
+    <ClInclude Include="material.h" />
     <ClInclude Include="math_test.h" />
     <ClInclude Include="shaderLoader.h" />
     <ClInclude Include="shader_wrapper.h" />

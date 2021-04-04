@@ -66,6 +66,12 @@
     <ClCompile Include="shader_wrapper.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="material.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="light_source.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -99,6 +105,12 @@
       <Filter>camera</Filter>
     </ClInclude>
     <ClInclude Include="shader_wrapper.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="material.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="light_source.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
