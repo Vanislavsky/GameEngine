@@ -351,10 +351,10 @@ void mouse_movement(camera& cam, float xpos, float ypos) {
 		firstMouse = false;
 	}
 
-	GLfloat xoffset = xpos - lastX;
-	GLfloat yoffset = lastY - ypos;
-	//GLfloat xoffset = lastX - xpos;
-	//GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
+	//GLfloat xoffset = xpos - lastX;
+	//GLfloat yoffset = lastY - ypos;
+	GLfloat xoffset = lastX - xpos;
+	GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
 	lastX = xpos;
 	lastY = ypos;
 

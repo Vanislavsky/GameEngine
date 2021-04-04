@@ -273,13 +273,6 @@ mat4 rotate(float angle, const  vec3& arbitrary_axis) {
 }
 
 mat4 look_at( vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
-	//vec3 camera_direction = (camera_position - goal_coordinates).normal();
-	//vec3 up = world_up.normal();
-	//vec3 camera_right = camera_direction.vector_product(up).normal();
-	//up = camera_right.vector_product(camera_direction);
-	//vec3 camera_right = world_up.vector_product(camera_direction).normal();
-	//vec3 up = camera_direction.vector_product(camera_right).normal();
-
 	vec3 camera_direction = (camera_position - goal_coordinates).normal();
 	vec3 up = world_up;
 	vec3 camera_right = up.vector_product(camera_direction).normal();
@@ -297,22 +290,19 @@ mat4 look_at( vec3& camera_position, vec3& goal_coordinates, vec3& world_up) {
 	first_mat.set_value(camera_direction.get_a2(), 2, 1);
 	first_mat.set_value(camera_direction.get_a3(), 2, 2);
 
-	first_mat.set_value(-camera_position.get_a1(), 3, 0);
-	first_mat.set_value(-camera_position.get_a2(), 3, 1);
-	first_mat.set_value(-camera_position.get_a3(), 3, 2);
+	first_mat.set_value(
+		-camera_right.get_a1() * camera_position.get_a1() +
+		-camera_right.get_a2() * camera_position.get_a2() +
+		-camera_right.get_a3() * camera_position.get_a3(), 3, 0);
+	first_mat.set_value(
+		-up.get_a1() * camera_position.get_a1() +
+		-up.get_a2() * camera_position.get_a2() +
+		-up.get_a3() * camera_position.get_a3(), 3, 1);
+	first_mat.set_value(
+		camera_direction.get_a1() * camera_position.get_a1() +
+		camera_direction.get_a2() * camera_position.get_a2() +
+		camera_direction.get_a3() * camera_position.get_a3(), 3, 2);
 	first_mat.set_value(1, 3, 3);
-
-	/*mat4 second_mat(0.0f);
-
-	second_mat.set_value(1, 0, 0);
-	second_mat.set_value(1, 1, 1);
-	second_mat.set_value(1, 2, 2);
-	second_mat.set_value(1, 3, 3);
-	second_mat.set_value(-camera_position.get_a1(), 0, 3);
-	second_mat.set_value(-camera_position.get_a2(), 1, 3);
-	second_mat.set_value(-camera_position.get_a3(), 2, 3);
-
-	auto res_mat = first_mat * second_mat;*/
 	return first_mat;
 }
 
