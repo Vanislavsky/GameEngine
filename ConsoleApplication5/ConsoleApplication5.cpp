@@ -3,6 +3,7 @@
 #pragma once
 
 #include <iostream>
+#include<vector>
 #include<string>
 
 //glew
@@ -26,6 +27,7 @@
 #include"camera.h"
 #include"shader_wrapper.h"
 #include"material.h"
+#include"light_source.h"
 
 unsigned int loadTexture(const char* path);
 void mouse_movement(camera& cam, float xpos, float ypos);
@@ -73,6 +75,8 @@ int main() {
 	camera.set_up({ 0.0f, 1.0f, 0.0f });
 
 	material emerald(0, 1, 0.6f);
+
+
 
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -137,12 +141,25 @@ int main() {
 		vec3(-1.3f,  1.0f, -1.5f)
 	};
 
-	vec3 pointLightPositions[] = {
-	   vec3(0.7f,  0.2f,  2.0f),
-	   vec3(2.3f, -3.3f, -4.0f),
-	   vec3(-4.0f,  2.0f, -12.0f),
-	   vec3(0.0f,  0.0f, -3.0f)
-	};
+	light_source dir_light(light_source::DIRLIGHT);
+	dir_light.set_direction({ -0.2f, -1.0f, -0.3f });
+	dir_light.set_ambient({ 0.05f, 0.05f, 0.05f });
+	dir_light.set_diffuse({ 0.4f, 0.4f, 0.4f });
+	dir_light.set_specular({ 0.5f, 0.5f, 0.5f });
+
+	std::vector<light_source> point_lights;
+	point_lights.push_back({ light_source::POINTLIGHT, {0.7f,  0.2f,  2.0f}, { 0.05f, 0.05f, 0.05f },
+		{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09,  0.032 });
+	point_lights.push_back({ light_source::POINTLIGHT, {2.3f, -3.3f, -4.0f}, { 0.05f, 0.05f, 0.05f },
+		{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032 });
+	point_lights.push_back({ light_source::POINTLIGHT, {-4.0f,  2.0f, -12.0f}, { 0.05f, 0.05f, 0.05f },
+		 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
+	point_lights.push_back({ light_source::POINTLIGHT, {0.0f,  0.0f, -3.0f}, { 0.05f, 0.05f, 0.05f },
+		 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
+
+	light_source spot(light_source::SPOTLIGHT, camera.get_position(), camera.get_front(), { 0.0f, 0.0f, 0.0f },
+		{ 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032, glm::cos(glm::radians(12.5f)),
+		glm::cos(glm::radians(15.0f)));
 
 	// 1. Настраиваем VAO (и VBO) куба
 	unsigned int VBO, cubeVAO;
@@ -197,12 +214,12 @@ int main() {
 			case sf::Event::KeyPressed:
 				if (windowEvent.key.code == sf::Keyboard::W) {
 					auto pos_add = camera.get_front() * cameraSpeed;
-					camera.set_postion(camera.get_position() + pos_add);
+					camera.set_postion(camera.get_position() - pos_add);
 				}
 
 				if (windowEvent.key.code == sf::Keyboard::S) {
 					auto pos_min = camera.get_front() * cameraSpeed;
-					camera.set_postion(camera.get_position() - pos_min);
+					camera.set_postion(camera.get_position() + pos_min);
 				}
 
 				if (windowEvent.key.code == sf::Keyboard::A) {
@@ -233,58 +250,59 @@ int main() {
 
 
 		// Направленный свет
-		lightingShader.set_vec3("dirLight.direction", { -0.2f, -1.0f, -0.3f });
-		lightingShader.set_vec3("dirLight.ambient", { 0.05f, 0.05f, 0.05f });
-		lightingShader.set_vec3("dirLight.diffuse", { 0.4f, 0.4f, 0.4f });
-		lightingShader.set_vec3("dirLight.specular", { 0.5f, 0.5f, 0.5f });
+		lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
+		lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
+		lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
+		lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
 
 		// Точечный источник света №1
-		lightingShader.set_vec3("pointLights[0].position", pointLightPositions[0]);
-		lightingShader.set_vec3("pointLights[0].ambient", { 0.05f, 0.05f, 0.05f });
-		lightingShader.set_vec3("pointLights[0].diffuse", { 0.8f, 0.8f, 0.8f });
-		lightingShader.set_vec3("pointLights[0].specular", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_float("pointLights[0].constant", 1.0f);
-		lightingShader.set_float("pointLights[0].linear", 0.09);
-		lightingShader.set_float("pointLights[0].quadratic", 0.032);
+		lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
+		lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
+		lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
+		lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
+		lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
+		lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
+		lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
 
 		// Точечный источник света №2
-		lightingShader.set_vec3("pointLights[1].position", pointLightPositions[1]);
-		lightingShader.set_vec3("pointLights[1].ambient", { 0.05f, 0.05f, 0.05f });
-		lightingShader.set_vec3("pointLights[1].diffuse", { 0.8f, 0.8f, 0.8f });
-		lightingShader.set_vec3("pointLights[1].specular", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_float("pointLights[1].constant", 1.0f);
-		lightingShader.set_float("pointLights[1].linear", 0.09);
-		lightingShader.set_float("pointLights[1].quadratic", 0.032);
+		lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
+		lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
+		lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
+		lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
+		lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
+		lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
+		lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
 
 		// Точечный источник света №3
-		lightingShader.set_vec3("pointLights[2].position", pointLightPositions[2]);
-		lightingShader.set_vec3("pointLights[2].ambient", { 0.05f, 0.05f, 0.05f });
-		lightingShader.set_vec3("pointLights[2].diffuse", { 0.8f, 0.8f, 0.8f });
-		lightingShader.set_vec3("pointLights[2].specular", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_float("pointLights[2].constant", 1.0f);
-		lightingShader.set_float("pointLights[2].linear", 0.09);
-		lightingShader.set_float("pointLights[2].quadratic", 0.032);
+		lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
+		lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
+		lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
+		lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
+		lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
+		lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
+		lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
 
 		// Точечный источник света №4
-		lightingShader.set_vec3("pointLights[3].position", pointLightPositions[3]);
-		lightingShader.set_vec3("pointLights[3].ambient", { 0.05f, 0.05f, 0.05f });
-		lightingShader.set_vec3("pointLights[3].diffuse", { 0.8f, 0.8f, 0.8f });
-		lightingShader.set_vec3("pointLights[3].specular", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_float("pointLights[3].constant", 1.0f);
-		lightingShader.set_float("pointLights[3].linear", 0.09);
-		lightingShader.set_float("pointLights[3].quadratic", 0.032);
+		lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
+		lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
+		lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
+		lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
+		lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
+		lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
+		lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
+
 
 		// Прожектор
-		lightingShader.set_vec3("spotLight.position", camera.get_position());
-		lightingShader.set_vec3("spotLight.direction", camera.get_front());
-		lightingShader.set_vec3("spotLight.ambient", { 0.0f, 0.0f, 0.0f });
-		lightingShader.set_vec3("spotLight.diffuse", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_vec3("spotLight.specular", { 1.0f, 1.0f, 1.0f });
-		lightingShader.set_float("spotLight.constant", 1.0f);
-		lightingShader.set_float("spotLight.linear", 0.09);
-		lightingShader.set_float("spotLight.quadratic", 0.032);
-		lightingShader.set_float("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		lightingShader.set_float("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		lightingShader.set_vec3("spotLight.position", spot.get_position());
+		lightingShader.set_vec3("spotLight.direction", spot.get_direction());
+		lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
+		lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
+		lightingShader.set_vec3("spotLight.specular", spot.get_specular());
+		lightingShader.set_float("spotLight.constant", spot.get_constant());
+		lightingShader.set_float("spotLight.linear", spot.get_linear());
+		lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
+		lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
+		lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -326,7 +344,8 @@ int main() {
 		glBindVertexArray(lightCubeVAO);
 		for (unsigned int i = 0; i < 4; i++)
 		{
-			mat4 light_model = translate(pointLightPositions[i]);
+			auto t_mat = point_lights[i].get_position();
+			mat4 light_model = translate(t_mat);
 			vec3 scale_vec(0.4, 0.4, 0.4);
 			light_model = light_model * scale(scale_vec);
 			lightCubeShader.set_mat4("model", light_model, true);
