@@ -154,6 +154,8 @@
     <ClCompile Include="shaderLoader.cpp" />
     <ClCompile Include="shader_wrapper.cpp" />
     <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="uniform_array.cpp" />
+    <ClCompile Include="uniform_buffer.cpp" />
     <ClCompile Include="vec2.cpp" />
     <ClCompile Include="vec3.cpp" />
     <ClCompile Include="vec4.cpp" />
@@ -169,6 +171,8 @@
     <ClInclude Include="shaderLoader.h" />
     <ClInclude Include="shader_wrapper.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="uniform_array.h" />
+    <ClInclude Include="uniform_buffer.h" />
     <ClInclude Include="vec2.h" />
     <ClInclude Include="vec3.h" />
     <ClInclude Include="vec4.h" />

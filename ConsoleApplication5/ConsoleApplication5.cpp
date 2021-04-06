@@ -22,6 +22,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include"uniform_buffer.h"
+#include"uniform_array.h"
+
 #include"math_test.h"
 
 #include"camera.h"
@@ -162,31 +165,42 @@ int main() {
 		glm::cos(glm::radians(15.0f)));
 
 	// 1. Настраиваем VAO (и VBO) куба
-	unsigned int VBO, cubeVAO;
-	glGenVertexArrays(1, &cubeVAO);
-	glBindVertexArray(cubeVAO);
-
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	//unsigned int  cubeVAO;
+	uniform_array vertex_arrays_ob;
+
+	//glGenVertexArrays(1, &cubeVAO);
+	//glBindVertexArray(cubeVAO);
+
+	uniform_buffer buffer_object(vertices);
+	
+	/*glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);*/
+
+	vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	vertex_arrays_ob.vertex_attrib_pointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	vertex_arrays_ob.vertex_attrib_pointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
+	/*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2);*/
 
 	// 2. Настраиваем VAO света (VBO остается неизменным; вершины те же и для светового объекта, который также является 3D-кубом)
-	unsigned int lightCubeVAO;;
+	uniform_array light_vertex_arrays_ob;
+	/*unsigned int lightCubeVAO;;
 	glGenVertexArrays(1, &lightCubeVAO);
-	glBindVertexArray(lightCubeVAO);
+	glBindVertexArray(lightCubeVAO);*/
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	buffer_object.bind();
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	light_vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	/*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);*/
 
 	unsigned int diffuseMap = loadTexture("../../../../Desktop/P163301-4-zoom-1.jpg");
 	unsigned int specularMap = loadTexture("../../../../Desktop/container_2_specular.png");
@@ -313,7 +327,9 @@ int main() {
 
 
 		//shader_program.use();
-		glBindVertexArray(cubeVAO);      // установили нужный массив для рендеринга
+
+		vertex_arrays_ob.bind();
+		//glBindVertexArray(cubeVAO);      // установили нужный массив для рендеринга
 
 
 		auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
@@ -341,7 +357,8 @@ int main() {
 		lightCubeShader.set_mat4("projection", prj, true);
 		lightCubeShader.set_mat4("view", view, false);
 
-		glBindVertexArray(lightCubeVAO);
+		light_vertex_arrays_ob.bind();
+		//glBindVertexArray(lightCubeVAO);
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			auto t_mat = point_lights[i].get_position();
