@@ -24,6 +24,7 @@
 
 #include"uniform_buffer.h"
 #include"uniform_array.h"
+#include"texture.h"
 
 #include"math_test.h"
 
@@ -165,45 +166,25 @@ int main() {
 		glm::cos(glm::radians(15.0f)));
 
 	// 1. Настраиваем VAO (и VBO) куба
-	
-	//unsigned int  cubeVAO;
+
 	uniform_array vertex_arrays_ob;
 
-	//glGenVertexArrays(1, &cubeVAO);
-	//glBindVertexArray(cubeVAO);
 
-	uniform_buffer buffer_object(vertices);
-	
-	/*glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);*/
+	uniform_buffer buffer_object(vertices, sizeof(vertices) / sizeof(float));
 
 	vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	vertex_arrays_ob.vertex_attrib_pointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	vertex_arrays_ob.vertex_attrib_pointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
-	/*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);*/
-
 	// 2. Настраиваем VAO света (VBO остается неизменным; вершины те же и для светового объекта, который также является 3D-кубом)
 	uniform_array light_vertex_arrays_ob;
-	/*unsigned int lightCubeVAO;;
-	glGenVertexArrays(1, &lightCubeVAO);
-	glBindVertexArray(lightCubeVAO);*/
 
 	buffer_object.bind();
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 	light_vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	/*glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);*/
 
-	unsigned int diffuseMap = loadTexture("../../../../Desktop/P163301-4-zoom-1.jpg");
-	unsigned int specularMap = loadTexture("../../../../Desktop/container_2_specular.png");
+	texture diffuse_map("../../../../Desktop/P163301-4-zoom-1.jpg");
+	texture specular_map("../../../../Desktop/container_2_specular.png");
 
 	lightingShader.use();
 	lightingShader.set_int("material.diffuse", emerald.get_diffuse());
@@ -318,27 +299,14 @@ int main() {
 		lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
 		lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
-		// Связывание карты отраженного цвета
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, specularMap);
-
-
-		//shader_program.use();
+		diffuse_map.bind(0);
+		specular_map.bind(1);
 
 		vertex_arrays_ob.bind();
-		//glBindVertexArray(cubeVAO);      // установили нужный массив для рендеринга
 
 
 		auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
-
-
-		//auto model = camera.get_model_matrix(glm::radians(-55.0f), { 1.0f, 0.0f, 0.0f });
-		//auto view = camera.get_translate_matrix(trans_vec);
-
-
 		auto view = camera.get_view_matrix();
 		lightingShader.set_mat4("view", view, false);
 		auto prj = camera.get_projection_matrix();
@@ -358,7 +326,6 @@ int main() {
 		lightCubeShader.set_mat4("view", view, false);
 
 		light_vertex_arrays_ob.bind();
-		//glBindVertexArray(lightCubeVAO);
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			auto t_mat = point_lights[i].get_position();
@@ -368,7 +335,7 @@ int main() {
 			lightCubeShader.set_mat4("model", light_model, true);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
+
 		window.display();
 	}
 
@@ -386,16 +353,10 @@ void mouse_movement(camera& cam, float xpos, float ypos) {
 		firstMouse = false;
 	}
 
-	//GLfloat xoffset = xpos - lastX;
-	//GLfloat yoffset = lastY - ypos;
 	GLfloat xoffset = lastX - xpos;
 	GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
 	lastX = xpos;
 	lastY = ypos;
-
-	//GLfloat sensitivity = 0.1;	// Change this value to your liking
-	//xoffset *= sensitivity;
-	//yoffset *= sensitivity;
 
 	yaw += xoffset * 0.05;
 	pitch += yoffset * 0.05;
