@@ -25,6 +25,9 @@
     <Filter Include="shaders">
       <UniqueIdentifier>{01dbc396-9f6b-451e-9ce3-90c9f135911d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{5bc6b51b-b169-4a7f-8ced-0eaa49e5d195}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication5.cpp">
@@ -163,6 +166,12 @@
     <None Include="multieple_lights.vs">
       <Filter>shaders</Filter>
     </None>
+    <None Include="skybox.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="skybox.vs">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg">
@@ -176,6 +185,24 @@
     </Image>
     <Image Include="..\..\..\..\Desktop\P163301-4-zoom-1.jpg">
       <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\front.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\top.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\left.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\bottom.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\right.png">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\back.png">
+      <Filter>res</Filter>
     </Image>
   </ItemGroup>
 </Project>

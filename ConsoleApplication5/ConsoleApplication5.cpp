@@ -35,6 +35,7 @@
 
 unsigned int loadTexture(const char* path);
 void mouse_movement(camera& cam, float xpos, float ypos);
+unsigned int loadCubemap(std::vector<std::string> faces);
 
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
@@ -67,6 +68,7 @@ int main() {
 
 	shader_wrapper lightingShader("multieple_lights.vs", "multieple_lights.fs");
 	shader_wrapper lightCubeShader("light_cube.vs", "light_cube.fs");
+	shader_wrapper skyboxShader("skybox.vs", "skybox.fs");
 
 	camera camera;
 	//float fow, float ratio, float near, float far
@@ -80,7 +82,50 @@ int main() {
 
 	material emerald(0, 1, 0.6f);
 
+	float skyboxVertices[] = {
+		// координаты         
+	   -1.0f,  1.0f, -1.0f,
+	   -1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+	   -1.0f,  1.0f, -1.0f,
 
+	   -1.0f, -1.0f,  1.0f,
+	   -1.0f, -1.0f, -1.0f,
+	   -1.0f,  1.0f, -1.0f,
+	   -1.0f,  1.0f, -1.0f,
+	   -1.0f,  1.0f,  1.0f,
+	   -1.0f, -1.0f,  1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+	   -1.0f, -1.0f,  1.0f,
+	   -1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+	   -1.0f, -1.0f,  1.0f,
+
+	   -1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+	   -1.0f,  1.0f,  1.0f,
+	   -1.0f,  1.0f, -1.0f,
+
+	   -1.0f, -1.0f, -1.0f,
+	   -1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+	   -1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+	};
 
 	float vertices[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -167,6 +212,22 @@ int main() {
 
 	// 1. Настраиваем VAO (и VBO) куба
 
+	uniform_array skybox_arr;
+	uniform_buffer skybox_buffer(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
+
+	//unsigned int skyboxVAO, skyboxVBO;
+	//glGenVertexArrays(1, &skyboxVAO);
+	///glGenBuffers(1, &skyboxVBO);
+	//glBindVertexArray(skyboxVAO);
+
+	skybox_buffer.bind();
+	//glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+
+	skybox_arr.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
 	uniform_array vertex_arrays_ob;
 
 
@@ -176,6 +237,8 @@ int main() {
 	vertex_arrays_ob.vertex_attrib_pointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	vertex_arrays_ob.vertex_attrib_pointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
+
+
 	// 2. Настраиваем VAO света (VBO остается неизменным; вершины те же и для светового объекта, который также является 3D-кубом)
 	uniform_array light_vertex_arrays_ob;
 
@@ -183,12 +246,27 @@ int main() {
 
 	light_vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
+	std::vector<std::string> faces
+	{
+		"../../../../Desktop/right.png",
+		"../../../../Desktop/left.png",
+		"../../../../Desktop/top.png",
+		"../../../../Desktop/bottom.png",
+		"../../../../Desktop/front.png",
+		"../../../../Desktop/back.png"
+	};
+	unsigned int cubemapTexture = loadCubemap(faces);
+
 	texture diffuse_map("../../../../Desktop/P163301-4-zoom-1.jpg");
 	texture specular_map("../../../../Desktop/container_2_specular.png");
 
 	lightingShader.use();
 	lightingShader.set_int("material.diffuse", emerald.get_diffuse());
 	lightingShader.set_int("material.specular", emerald.get_specular());
+
+	skyboxShader.use();
+	skyboxShader.set_int("skybox", 0);
+
 	// цикл рендера
 	bool isGo = true;
 	while (isGo) {
@@ -336,6 +414,21 @@ int main() {
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
+		glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+		skyboxShader.use();
+		view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+		skyboxShader.set_mat4("view", view, false);
+		skyboxShader.set_mat4("projection", prj, true);
+
+		// Куб скайбокса
+		//glBindVertexArray(skyboxVAO);
+		skybox_arr.bind();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
+
 		window.display();
 	}
 
@@ -408,6 +501,36 @@ unsigned int loadTexture(char const* path)
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
+
+	return textureID;
+}
+
+unsigned int loadCubemap(std::vector<std::string> faces)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
 }

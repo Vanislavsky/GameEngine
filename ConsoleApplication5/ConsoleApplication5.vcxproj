@@ -190,11 +190,19 @@
     <None Include="light_casters.vs" />
     <None Include="multieple_lights.fs" />
     <None Include="multieple_lights.vs" />
+    <None Include="skybox.fs" />
+    <None Include="skybox.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\Desktop\back.png" />
+    <Image Include="..\..\..\..\Desktop\bottom.png" />
     <Image Include="..\..\..\..\Desktop\container_2_specular.png" />
+    <Image Include="..\..\..\..\Desktop\front.png" />
+    <Image Include="..\..\..\..\Desktop\left.png" />
     <Image Include="..\..\..\..\Desktop\P163301-4-zoom-1.jpg" />
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg" />
+    <Image Include="..\..\..\..\Desktop\right.png" />
+    <Image Include="..\..\..\..\Desktop\top.png" />
     <Image Include="..\..\..\..\Desktop\wooden_container_2.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

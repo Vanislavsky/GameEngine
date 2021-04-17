@@ -27,6 +27,7 @@ public:
 
 	mat4 get_projection_matrix() const;
 	mat4 get_view_matrix();
+	mat4 get_view_mat3();
 	mat4 get_model_matrix(float, const vec3&) const;
 	mat4 get_translate_matrix(vec3&) const;
 public:

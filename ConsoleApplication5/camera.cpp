@@ -64,6 +64,17 @@ mat4 camera::get_view_matrix() {
 	return look_at(position, goal, up);
 }
 
+mat4 camera::get_view_mat3() {
+	auto goal = position + front;
+	mat4 res = look_at(position, goal, up);
+	res.set_value(0, 0, 3);
+	res.set_value(0, 1, 3);
+	res.set_value(0, 2, 3);
+	res.set_value(0, 3, 3);
+
+	return res;
+}
+
 mat4 camera::get_model_matrix(float angle, const vec3& arbitrary_unit) const {
 	return rotate(angle, arbitrary_unit);
 }
