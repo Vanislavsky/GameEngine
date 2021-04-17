@@ -210,27 +210,16 @@ int main() {
 		{ 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032, glm::cos(glm::radians(12.5f)),
 		glm::cos(glm::radians(15.0f)));
 
-	// 1. Настраиваем VAO (и VBO) куба
+	// 1. Настраиваем VAO (и VBO) 
 
 	uniform_array skybox_arr;
 	uniform_buffer skybox_buffer(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
 
-	//unsigned int skyboxVAO, skyboxVBO;
-	//glGenVertexArrays(1, &skyboxVAO);
-	///glGenBuffers(1, &skyboxVBO);
-	//glBindVertexArray(skyboxVAO);
-
 	skybox_buffer.bind();
-	//glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
 
 	skybox_arr.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	uniform_array vertex_arrays_ob;
-
-
 	uniform_buffer buffer_object(vertices, sizeof(vertices) / sizeof(float));
 
 	vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -421,7 +410,6 @@ int main() {
 		skyboxShader.set_mat4("projection", prj, true);
 
 		// Куб скайбокса
-		//glBindVertexArray(skyboxVAO);
 		skybox_arr.bind();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
