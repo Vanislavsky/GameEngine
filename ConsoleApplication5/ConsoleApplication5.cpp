@@ -262,7 +262,7 @@ int main() {
 
 	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
 
-	Model Model("C:/Users/79242/Desktop/dino/rapid.obj");
+	Model Model("C:/Users/79242/Desktop/backpack/backpack.obj");
 
 	// цикл рендера
 	bool isGo = true;
@@ -331,77 +331,77 @@ int main() {
 
 		Model.Draw(load_shader);
 
-		//lightingShader.use();
-		//lightingShader.set_vec3("viewPos", camera.get_position());
-		//lightingShader.set_float("material.shininess", emerald.get_shininess());
+		lightingShader.use();
+		lightingShader.set_vec3("viewPos", camera.get_position());
+		lightingShader.set_float("material.shininess", emerald.get_shininess());
 
 
-		//// Направленный свет
-		//lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
-		//lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
-		//lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
-		//lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
+		// Направленный свет
+		lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
+		lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
+		lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
+		lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
 
-		//// Точечный источник света №1
-		//lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
-		//lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
-		//lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
-		//lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
-		//lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
-		//lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
-		//lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
+		// Точечный источник света №1
+		lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
+		lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
+		lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
+		lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
+		lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
+		lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
+		lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
 
-		//// Точечный источник света №2
-		//lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
-		//lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
-		//lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
-		//lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
-		//lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
-		//lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
-		//lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
+		// Точечный источник света №2
+		lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
+		lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
+		lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
+		lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
+		lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
+		lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
+		lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
 
-		//// Точечный источник света №3
-		//lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
-		//lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
-		//lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
-		//lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
-		//lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
-		//lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
-		//lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
+		// Точечный источник света №3
+		lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
+		lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
+		lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
+		lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
+		lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
+		lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
+		lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
 
-		//// Точечный источник света №4
-		//lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
-		//lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
-		//lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
-		//lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
-		//lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
-		//lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
-		//lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
-
-
-		//// Прожектор
-		//lightingShader.set_vec3("spotLight.position", spot.get_position());
-		//lightingShader.set_vec3("spotLight.direction", spot.get_direction());
-		//lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
-		//lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
-		//lightingShader.set_vec3("spotLight.specular", spot.get_specular());
-		//lightingShader.set_float("spotLight.constant", spot.get_constant());
-		//lightingShader.set_float("spotLight.linear", spot.get_linear());
-		//lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
-		//lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
-		//lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
+		// Точечный источник света №4
+		lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
+		lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
+		lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
+		lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
+		lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
+		lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
+		lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
 
 
-		//diffuse_map.bind(0);
-		//specular_map.bind(1);
+		// Прожектор
+		lightingShader.set_vec3("spotLight.position", spot.get_position());
+		lightingShader.set_vec3("spotLight.direction", spot.get_direction());
+		lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
+		lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
+		lightingShader.set_vec3("spotLight.specular", spot.get_specular());
+		lightingShader.set_float("spotLight.constant", spot.get_constant());
+		lightingShader.set_float("spotLight.linear", spot.get_linear());
+		lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
+		lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
+		lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
 
-		//vertex_arrays_ob.bind();
 
-		//auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
-		//auto view = camera.get_view_matrix();
-		//lightingShader.set_mat4("view", view, false);
-		//auto prj = camera.get_projection_matrix();
-		//lightingShader.set_mat4("projection", prj, true);
+		diffuse_map.bind(0);
+		specular_map.bind(1);
+
+		vertex_arrays_ob.bind();
+
+		/*auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		auto view = camera.get_view_matrix();
+		lightingShader.set_mat4("view", view, false);
+		auto prj = camera.get_projection_matrix();*/
+		lightingShader.set_mat4("projection", proj, true);
 
 
 		//for (int i = 0; i < 10; i++) {
@@ -412,9 +412,9 @@ int main() {
 		//	glDrawArrays(GL_TRIANGLES, 0, 36);
 		//}
 
-		//lightCubeShader.use();
-		//lightCubeShader.set_mat4("projection", prj, true);
-		//lightCubeShader.set_mat4("view", view, false);
+		lightCubeShader.use();
+		lightCubeShader.set_mat4("projection", proj, true);
+		lightCubeShader.set_mat4("view", view, false);
 
 		//light_vertex_arrays_ob.bind();
 		//for (unsigned int i = 0; i < 4; i++)
@@ -439,13 +439,13 @@ int main() {
 		////skyboxShader.set_mat4("view", sky_view, false);
 		//skyboxShader.set_mat4("projection", sky_projection, true);
 
-		////// Куб скайбокса
-		//skybox_arr.bind();
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glBindVertexArray(0);
-		//glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
+		//// Куб скайбокса
+		skybox_arr.bind();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
 
 		window.display();
 	}
