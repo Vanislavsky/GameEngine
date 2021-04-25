@@ -28,6 +28,21 @@
     <Filter Include="res">
       <UniqueIdentifier>{5bc6b51b-b169-4a7f-8ced-0eaa49e5d195}</UniqueIdentifier>
     </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{1948b8c1-ce13-4f52-9710-f333278e9fd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\laplas_model">
+      <UniqueIdentifier>{5787aab3-2f10-406f-9f20-c15494357b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\laplas_model\textures">
+      <UniqueIdentifier>{a7bb2e75-fef7-4821-93c3-c43b7ebc8a43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\dino">
+      <UniqueIdentifier>{017fbd6b-b3e2-44f7-b123-59851a8266e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models\dino\textures">
+      <UniqueIdentifier>{a79fd74a-1701-40f9-a483-d52f6caee498}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication5.cpp">
@@ -84,6 +99,15 @@
     <ClCompile Include="texture.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
@@ -134,6 +158,15 @@
     <ClInclude Include="texture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\res\shaders\e4.fs">
@@ -172,6 +205,15 @@
     <None Include="skybox.vs">
       <Filter>shaders</Filter>
     </None>
+    <None Include="model_loading.fs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="model_loading.vs">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="..\..\..\..\Desktop\pokemon-laplas\source\Pokémon - Lapras.blend">
+      <Filter>models\laplas_model</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\Desktop\res\imgs\1.jpg">
@@ -203,6 +245,18 @@
     </Image>
     <Image Include="..\..\..\..\Desktop\back.png">
       <Filter>res</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\pokemon-laplas\textures\lapras-texture.png">
+      <Filter>models\laplas_model\textures</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\dino\textures\material0_normal.jpeg">
+      <Filter>models\dino\textures</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\dino\textures\material0_occlusion.jpeg">
+      <Filter>models\dino\textures</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\dino\textures\material0_basecolor.jpeg">
+      <Filter>models\dino\textures</Filter>
     </Image>
   </ItemGroup>
 </Project>

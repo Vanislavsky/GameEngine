@@ -27,3 +27,7 @@ void shader_wrapper::set_vec3(const std::string& name, const vec3& value) {
 void shader_wrapper::set_float(const std::string& name, float value) {
 	glUniform1f(glGetUniformLocation(shader_id, name.c_str()), value);
 }
+
+GLuint shader_wrapper::get_shader_id() {
+	return shader_id;
+}

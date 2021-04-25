@@ -32,6 +32,8 @@
 #include"shader_wrapper.h"
 #include"material.h"
 #include"light_source.h"
+#include"Model.h"
+
 
 unsigned int loadTexture(const char* path);
 void mouse_movement(camera& cam, float xpos, float ypos);
@@ -61,6 +63,7 @@ int main() {
 	glewExperimental = GL_TRUE; // включить все современные функции ogl
 
 	glEnable(GL_DEPTH_TEST);
+
 	if (GLEW_OK != glewInit()) { // включить glew
 		std::cout << "Error:: glew not init =(" << std::endl;
 		return -1;
@@ -237,12 +240,12 @@ int main() {
 
 	std::vector<std::string> faces
 	{
-		"../../../../Desktop/right.png",
-		"../../../../Desktop/left.png",
-		"../../../../Desktop/top.png",
-		"../../../../Desktop/bottom.png",
-		"../../../../Desktop/front.png",
-		"../../../../Desktop/back.png"
+		"../../../../Desktop/right.jpg",
+		"../../../../Desktop/left.jpg",
+		"../../../../Desktop/top.jpg",
+		"../../../../Desktop/bottom.jpg",
+		"../../../../Desktop/front.jpg",
+		"../../../../Desktop/back.jpg"
 	};
 	unsigned int cubemapTexture = loadCubemap(faces);
 
@@ -255,6 +258,10 @@ int main() {
 
 	skyboxShader.use();
 	skyboxShader.set_int("skybox", 0);
+
+	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
+
+	Model model("C:/Users/79242/Desktop/dino/rapid.obj");
 
 	// цикл рендера
 	bool isGo = true;
@@ -304,118 +311,133 @@ int main() {
 
 		}
 
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f); //задали цвет отчистки
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //отчистка экрана
-		lightingShader.use();
-		lightingShader.set_vec3("viewPos", camera.get_position());
-		lightingShader.set_float("material.shininess", emerald.get_shininess());
 
+		load_shader.use();
 
-		// Направленный свет
-		lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
-		lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
-		lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
-		lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
-
-		// Точечный источник света №1
-		lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
-		lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
-		lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
-		lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
-		lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
-		lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
-		lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
-
-		// Точечный источник света №2
-		lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
-		lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
-		lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
-		lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
-		lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
-		lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
-		lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
-
-		// Точечный источник света №3
-		lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
-		lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
-		lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
-		lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
-		lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
-		lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
-		lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
-
-		// Точечный источник света №4
-		lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
-		lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
-		lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
-		lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
-		lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
-		lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
-		lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
-
-
-		// Прожектор
-		lightingShader.set_vec3("spotLight.position", spot.get_position());
-		lightingShader.set_vec3("spotLight.direction", spot.get_direction());
-		lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
-		lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
-		lightingShader.set_vec3("spotLight.specular", spot.get_specular());
-		lightingShader.set_float("spotLight.constant", spot.get_constant());
-		lightingShader.set_float("spotLight.linear", spot.get_linear());
-		lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
-		lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
-		lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
-
-
-		diffuse_map.bind(0);
-		specular_map.bind(1);
-
-		vertex_arrays_ob.bind();
-
-
-		auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		mat4 proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
 		auto view = camera.get_view_matrix();
-		lightingShader.set_mat4("view", view, false);
-		auto prj = camera.get_projection_matrix();
-		lightingShader.set_mat4("projection", prj, true);
+		load_shader.set_mat4("projection", proj, true);
+		load_shader.set_mat4("view", view, false);
+
+		model.Draw(load_shader);
+
+		//lightingShader.use();
+		//lightingShader.set_vec3("viewPos", camera.get_position());
+		//lightingShader.set_float("material.shininess", emerald.get_shininess());
 
 
-		for (int i = 0; i < 10; i++) {
-			mat4 model_new = translate(cubePositions[i]);
-			float angle = 20.0f * i;
-			model_new = model_new * rotate(glm::radians(angle), vec3(1.0f, 0.3f, 0.5f));
-			lightingShader.set_mat4("model", model_new, true);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		//// Направленный свет
+		//lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
+		//lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
+		//lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
+		//lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
 
-		lightCubeShader.use();
-		lightCubeShader.set_mat4("projection", prj, true);
-		lightCubeShader.set_mat4("view", view, false);
+		//// Точечный источник света №1
+		//lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
+		//lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
+		//lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
+		//lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
+		//lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
+		//lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
+		//lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
 
-		light_vertex_arrays_ob.bind();
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			auto t_mat = point_lights[i].get_position();
-			mat4 light_model = translate(t_mat);
-			vec3 scale_vec(0.4, 0.4, 0.4);
-			light_model = light_model * scale(scale_vec);
-			lightCubeShader.set_mat4("model", light_model, true);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		//// Точечный источник света №2
+		//lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
+		//lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
+		//lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
+		//lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
+		//lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
+		//lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
+		//lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
 
-		glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
-		skyboxShader.use();
-		view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
-		skyboxShader.set_mat4("view", view, false);
-		skyboxShader.set_mat4("projection", prj, true);
+		//// Точечный источник света №3
+		//lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
+		//lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
+		//lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
+		//lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
+		//lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
+		//lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
+		//lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
 
-		// Куб скайбокса
-		skybox_arr.bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-		glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
+		//// Точечный источник света №4
+		//lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
+		//lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
+		//lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
+		//lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
+		//lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
+		//lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
+		//lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
+
+
+		//// Прожектор
+		//lightingShader.set_vec3("spotLight.position", spot.get_position());
+		//lightingShader.set_vec3("spotLight.direction", spot.get_direction());
+		//lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
+		//lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
+		//lightingShader.set_vec3("spotLight.specular", spot.get_specular());
+		//lightingShader.set_float("spotLight.constant", spot.get_constant());
+		//lightingShader.set_float("spotLight.linear", spot.get_linear());
+		//lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
+		//lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
+		//lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
+
+
+		//diffuse_map.bind(0);
+		//specular_map.bind(1);
+
+		//vertex_arrays_ob.bind();
+
+		//auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
+		//auto view = camera.get_view_matrix();
+		//lightingShader.set_mat4("view", view, false);
+		//auto prj = camera.get_projection_matrix();
+		//lightingShader.set_mat4("projection", prj, true);
+
+
+		//for (int i = 0; i < 10; i++) {
+		//	mat4 model_new = translate(cubePositions[i]);
+		//	float angle = 20.0f * i;
+		//	model_new = model_new * rotate(glm::radians(angle), vec3(1.0f, 0.3f, 0.5f));
+		//	lightingShader.set_mat4("model", model_new, true);
+		//	glDrawArrays(GL_TRIANGLES, 0, 36);
+		//}
+
+		//lightCubeShader.use();
+		//lightCubeShader.set_mat4("projection", prj, true);
+		//lightCubeShader.set_mat4("view", view, false);
+
+		//light_vertex_arrays_ob.bind();
+		//for (unsigned int i = 0; i < 4; i++)
+		//{
+		//	auto t_mat = point_lights[i].get_position();
+		//	mat4 light_model = translate(t_mat);
+		//	vec3 scale_vec(0.4, 0.4, 0.4);
+		//	light_model = light_model * scale(scale_vec);
+		//	lightCubeShader.set_mat4("model", light_model, true);
+		//	glDrawArrays(GL_TRIANGLES, 0, 36);
+		//}
+
+		//glm::vec3 vec1(camera.get_position().get_a1() , camera.get_position().get_a2(), camera.get_position().get_a3());
+		//glm::vec3 vec2((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
+		//glm::vec3 vec__3(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
+		//mat4 sky_projection = perspective(glm::radians(45.0f), (float)1800 / (float)1600, 0.1f, 100.0f);
+		//glm::mat4 sky_view = glm::mat4(glm::mat3(glm::lookAt(vec1, vec2, vec__3)));
+		//glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+		//skyboxShader.use();
+		//view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+		//glUniformMatrix4fv(glGetUniformLocation(skyboxShader.get_shader_id(), "view"), 1, GL_FALSE, &sky_view[0][0]);
+		////skyboxShader.set_mat4("view", sky_view, false);
+		//skyboxShader.set_mat4("projection", sky_projection, true);
+
+		////// Куб скайбокса
+		//skybox_arr.bind();
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(0);
+		//glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
 
 		window.display();
 	}

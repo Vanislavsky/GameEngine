@@ -11,6 +11,7 @@ class shader_wrapper {
 public:
 	explicit shader_wrapper(const std::string&, const std::string&);
 
+	GLuint get_shader_id();
 	void use();
 	void set_mat4(const GLchar*, mat4&, bool);
 	void set_int(const std::string& name, int value);
