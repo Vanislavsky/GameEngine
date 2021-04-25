@@ -62,6 +62,7 @@ int main() {
 
 	glewExperimental = GL_TRUE; // включить все современные функции ogl
 
+	stbi_set_flip_vertically_on_load(true);
 	glEnable(GL_DEPTH_TEST);
 
 	if (GLEW_OK != glewInit()) { // включить glew
@@ -261,7 +262,7 @@ int main() {
 
 	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
 
-	Model model("C:/Users/79242/Desktop/dino/rapid.obj");
+	Model Model("C:/Users/79242/Desktop/dino/rapid.obj");
 
 	// цикл рендера
 	bool isGo = true;
@@ -289,6 +290,7 @@ int main() {
 				if (windowEvent.key.code == sf::Keyboard::S) {
 					auto pos_min = camera.get_front() * cameraSpeed;
 					camera.set_postion(camera.get_position() + pos_min);
+
 				}
 
 				if (windowEvent.key.code == sf::Keyboard::A) {
@@ -311,7 +313,7 @@ int main() {
 
 		}
 
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //отчистка экрана
 
 		load_shader.use();
@@ -321,7 +323,13 @@ int main() {
 		load_shader.set_mat4("projection", proj, true);
 		load_shader.set_mat4("view", view, false);
 
-		model.Draw(load_shader);
+		vec3 model_vec(0.0f, 0.0f, 0.0f);
+		vec3 scale_vec(0.2f, 0.2f, 0.2f);
+		auto model_tr = translate(model_vec);
+		model_tr = model_tr * scale(scale_vec);
+		load_shader.set_mat4("model", model_tr, false);
+
+		Model.Draw(load_shader);
 
 		//lightingShader.use();
 		//lightingShader.set_vec3("viewPos", camera.get_position());
