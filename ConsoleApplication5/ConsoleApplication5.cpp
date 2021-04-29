@@ -62,7 +62,6 @@ int main() {
 
 	glewExperimental = GL_TRUE; // включить все современные функции ogl
 
-	stbi_set_flip_vertically_on_load(true);
 	glEnable(GL_DEPTH_TEST);
 
 	if (GLEW_OK != glewInit()) { // включить glew
@@ -261,7 +260,7 @@ int main() {
 	skyboxShader.set_int("skybox", 0);
 
 	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
-
+	stbi_set_flip_vertically_on_load(true);
 	Model Model("C:/Users/79242/Desktop/backpack/backpack.obj");
 
 	// цикл рендера
@@ -325,6 +324,7 @@ int main() {
 
 		vec3 model_vec(0.0f, 0.0f, 0.0f);
 		vec3 scale_vec(0.2f, 0.2f, 0.2f);
+		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
 		auto model_tr = translate(model_vec);
 		model_tr = model_tr * scale(scale_vec);
 		load_shader.set_mat4("model", model_tr, false);
@@ -416,28 +416,44 @@ int main() {
 		lightCubeShader.set_mat4("projection", proj, true);
 		lightCubeShader.set_mat4("view", view, false);
 
-		//light_vertex_arrays_ob.bind();
-		//for (unsigned int i = 0; i < 4; i++)
-		//{
-		//	auto t_mat = point_lights[i].get_position();
-		//	mat4 light_model = translate(t_mat);
-		//	vec3 scale_vec(0.4, 0.4, 0.4);
-		//	light_model = light_model * scale(scale_vec);
-		//	lightCubeShader.set_mat4("model", light_model, true);
-		//	glDrawArrays(GL_TRIANGLES, 0, 36);
+		/*light_vertex_arrays_ob.bind();
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			auto t_mat = point_lights[i].get_position();
+			mat4 light_model = translate(t_mat);
+			vec3 scale_vec(0.4, 0.4, 0.4);
+			light_model = light_model * scale(scale_vec);
+			lightCubeShader.set_mat4("model", light_model, true);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}*/
+
+		glm::vec3 vec1(camera.get_position().get_a1() , camera.get_position().get_a2(), camera.get_position().get_a3());
+		glm::vec3 vec2((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
+		glm::vec3 vec__3(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
+		mat4 sky_projection = perspective(glm::radians(45.0f), (float)1800 / (float)1600, 0.1f, 100.0f);
+		glm::mat4 sky_view = glm::mat4(glm::mat3(glm::lookAt(vec1, vec2, vec__3)));
+
+
+		//vec3 vec1_our(camera.get_position().get_a1(), camera.get_position().get_a2(), camera.get_position().get_a3());
+		//vec3 vec2_our((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
+		//vec3 vec__3_our(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
+		//mat4 our_sky_view = look_at(vec1_our, vec2_our, vec__3_our);
+
+		//for (int i = 0; i < 4; i++) {
+		//	for (int j = 0; j < 4; j++) {
+		//		//std::cout << our_sky_view.get_value(i, j) << "  " << sky_view[i][j] << "    " << i << " " << j << std::endl;
+		//		std::cout << our_sky_view.get_value(i, j) << " ";
+		//	}
+		//	std::cout << std::endl;
 		//}
 
-		//glm::vec3 vec1(camera.get_position().get_a1() , camera.get_position().get_a2(), camera.get_position().get_a3());
-		//glm::vec3 vec2((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
-		//glm::vec3 vec__3(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
-		//mat4 sky_projection = perspective(glm::radians(45.0f), (float)1800 / (float)1600, 0.1f, 100.0f);
-		//glm::mat4 sky_view = glm::mat4(glm::mat3(glm::lookAt(vec1, vec2, vec__3)));
-		//glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
-		//skyboxShader.use();
-		//view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
-		//glUniformMatrix4fv(glGetUniformLocation(skyboxShader.get_shader_id(), "view"), 1, GL_FALSE, &sky_view[0][0]);
-		////skyboxShader.set_mat4("view", sky_view, false);
-		//skyboxShader.set_mat4("projection", sky_projection, true);
+
+		glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+		skyboxShader.use();
+		view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.get_shader_id(), "view"), 1, GL_FALSE, &sky_view[0][0]);
+		//skyboxShader.set_mat4("view", our_sky_view, false);
+		skyboxShader.set_mat4("projection", sky_projection, true);
 
 		//// Куб скайбокса
 		skybox_arr.bind();
