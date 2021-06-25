@@ -262,6 +262,13 @@ int main() {
 	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
 	stbi_set_flip_vertically_on_load(true);
 	Model Model("C:/Users/79242/Desktop/backpack/backpack.obj");
+	std::vector<vec3> objectPositions;
+	objectPositions.push_back(vec3(-0.7f, 0.0f, 0.0f));
+	objectPositions.push_back(vec3(0.0f, 0.0f, 0.0f));
+	objectPositions.push_back(vec3(0.7f, 0.0, 0.0f));
+	objectPositions.push_back(vec3(-0.7f, 0.0, 0.7f));
+	objectPositions.push_back(vec3(0.0f, 0.0f, 0.7f));
+	objectPositions.push_back(vec3(0.7f, 0.0, 0.7f));
 
 	// цикл рендера
 	bool isGo = true;
@@ -322,14 +329,65 @@ int main() {
 		load_shader.set_mat4("projection", proj, true);
 		load_shader.set_mat4("view", view, false);
 
-		vec3 model_vec(0.0f, 0.0f, 0.0f);
+		/*for (int i = 0; i < objectPositions.size(); i++) {
+			auto model_tr = translate(objectPositions[i]);
+			model_tr = model_tr * scale(objectPositions[i]);
+			load_shader.set_mat4("model", model_tr, true);
+
+			Model.Draw(load_shader);
+		}*/
+
+		//auto model_tr = translate(objectPositions[0]);
+		////model_tr = model_tr * scale(objectPositions[0]);
+		//load_shader.set_mat4("model", model_tr, false);
+
+		//Model.Draw(load_shader);
+		/*vec3 model_vec(0.5f, -0.5f, 0.0f);
+		auto model_tr = translate(model_vec);
+
+		auto model = glm::mat4(1.0f);
+		model = glm::translate(model, { 0.5f, -0.5f, 0.0f });
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				std::cout << model[i][j] << " ";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+		std::cout << std::endl;
+
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				std::cout << model_tr.get_value(j, i) << " ";
+			}
+			std::cout << std::endl;
+		}*/
+		
+		for (int i = 0; i < objectPositions.size(); i++) {
+			vec3 scale_vec(0.2f, 0.2f, 0.2f);
+			auto model_tr = translate(objectPositions[i]);
+			model_tr = model_tr * scale(scale_vec);
+			load_shader.set_mat4("model", model_tr, true);
+			Model.Draw(load_shader);
+		}
+
+		/*vec3 model_vec(1.0f, 0.0f, 0.0f);
 		vec3 scale_vec(0.2f, 0.2f, 0.2f);
 		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
 		auto model_tr = translate(model_vec);
 		model_tr = model_tr * scale(scale_vec);
-		load_shader.set_mat4("model", model_tr, false);
-
+		load_shader.set_mat4("model", model_tr, true);
 		Model.Draw(load_shader);
+
+		vec3 model_vec2(0.0f, 0.0f, 0.0f);
+		vec3 scale_vec2(0.2f, 0.2f, 0.2f);
+		vec3 rotate_vec2(1.0f, 0.0f, 0.0f);
+		auto model_tr2 = translate(model_vec2);
+		model_tr2 = model_tr2 * scale(scale_vec2);
+		load_shader.set_mat4("model", model_tr2, true);
+		Model.Draw(load_shader);*/
 
 		lightingShader.use();
 		lightingShader.set_vec3("viewPos", camera.get_position());
