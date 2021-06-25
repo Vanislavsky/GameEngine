@@ -38,7 +38,8 @@
 unsigned int loadTexture(const char* path);
 void mouse_movement(camera& cam, float xpos, float ypos);
 unsigned int loadCubemap(std::vector<std::string> faces);
-
+void renderQuad();
+void renderCube();
 
 GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
 GLfloat pitch = 0.0f;
@@ -69,9 +70,14 @@ int main() {
 		return -1;
 	}
 
-	shader_wrapper lightingShader("multieple_lights.vs", "multieple_lights.fs");
-	shader_wrapper lightCubeShader("light_cube.vs", "light_cube.fs");
-	shader_wrapper skyboxShader("skybox.vs", "skybox.fs");
+	shader_wrapper geometry_shader("g_buffer.vs", "g_buffer.fs");
+	shader_wrapper lighting_shader("deferred_shading.vs", "deffered_shading.fs");
+	shader_wrapper light_cube_shader("defered_light_box.vs", "deferred_light_box.fs");
+	//shader_wrapper skyboxShader("skybox.vs", "skybox.fs");
+
+	/*shader_wrapper lightingShader("multieple_lights.vs", "multieple_lights.fs");
+	shader_wrapper lightCubeShader("light_cube.vs", "light_cube.fs");*/
+	
 
 	camera camera;
 	//float fow, float ratio, float near, float far
@@ -83,139 +89,139 @@ int main() {
 	camera.set_front({ 0.0f, 0.0f, -1.0f });
 	camera.set_up({ 0.0f, 1.0f, 0.0f });
 
-	material emerald(0, 1, 0.6f);
+	//material emerald(0, 1, 0.6f);
 
-	float skyboxVertices[] = {
-		// координаты         
-	   -1.0f,  1.0f, -1.0f,
-	   -1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f,  1.0f, -1.0f,
-	   -1.0f,  1.0f, -1.0f,
+	//float skyboxVertices[] = {
+	//	// координаты         
+	//   -1.0f,  1.0f, -1.0f,
+	//   -1.0f, -1.0f, -1.0f,
+	//	1.0f, -1.0f, -1.0f,
+	//	1.0f, -1.0f, -1.0f,
+	//	1.0f,  1.0f, -1.0f,
+	//   -1.0f,  1.0f, -1.0f,
 
-	   -1.0f, -1.0f,  1.0f,
-	   -1.0f, -1.0f, -1.0f,
-	   -1.0f,  1.0f, -1.0f,
-	   -1.0f,  1.0f, -1.0f,
-	   -1.0f,  1.0f,  1.0f,
-	   -1.0f, -1.0f,  1.0f,
+	//   -1.0f, -1.0f,  1.0f,
+	//   -1.0f, -1.0f, -1.0f,
+	//   -1.0f,  1.0f, -1.0f,
+	//   -1.0f,  1.0f, -1.0f,
+	//   -1.0f,  1.0f,  1.0f,
+	//   -1.0f, -1.0f,  1.0f,
 
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
+	//	1.0f, -1.0f, -1.0f,
+	//	1.0f, -1.0f,  1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//	1.0f,  1.0f, -1.0f,
+	//	1.0f, -1.0f, -1.0f,
 
-	   -1.0f, -1.0f,  1.0f,
-	   -1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f, -1.0f,  1.0f,
-	   -1.0f, -1.0f,  1.0f,
+	//   -1.0f, -1.0f,  1.0f,
+	//   -1.0f,  1.0f,  1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//	1.0f, -1.0f,  1.0f,
+	//   -1.0f, -1.0f,  1.0f,
 
-	   -1.0f,  1.0f, -1.0f,
-		1.0f,  1.0f, -1.0f,
-		1.0f,  1.0f,  1.0f,
-		1.0f,  1.0f,  1.0f,
-	   -1.0f,  1.0f,  1.0f,
-	   -1.0f,  1.0f, -1.0f,
+	//   -1.0f,  1.0f, -1.0f,
+	//	1.0f,  1.0f, -1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//	1.0f,  1.0f,  1.0f,
+	//   -1.0f,  1.0f,  1.0f,
+	//   -1.0f,  1.0f, -1.0f,
 
-	   -1.0f, -1.0f, -1.0f,
-	   -1.0f, -1.0f,  1.0f,
-		1.0f, -1.0f, -1.0f,
-		1.0f, -1.0f, -1.0f,
-	   -1.0f, -1.0f,  1.0f,
-		1.0f, -1.0f,  1.0f
-	};
+	//   -1.0f, -1.0f, -1.0f,
+	//   -1.0f, -1.0f,  1.0f,
+	//	1.0f, -1.0f, -1.0f,
+	//	1.0f, -1.0f, -1.0f,
+	//   -1.0f, -1.0f,  1.0f,
+	//	1.0f, -1.0f,  1.0f
+	//};
 
-	float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+	//float vertices[] = {
+	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	//	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	//	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+	//	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	//	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	//	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+	//	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+	//	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+	//	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+	//	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
-	};
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+	//	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+	//	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+	//	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+	//	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+	//};
 
-	//EBO позволит использовать одни и те же вершины в разных треугольниках
-	unsigned int indices[] = {
-		0, 1, 3, // первый треугольник
-		1, 2, 3  // второй треугольник
-	};
+	////EBO позволит использовать одни и те же вершины в разных треугольниках
+	//unsigned int indices[] = {
+	//	0, 1, 3, // первый треугольник
+	//	1, 2, 3  // второй треугольник
+	//};
 
-	vec3 cubePositions[] = {
-		vec3(0.0f,  0.0f,  0.0f),
-		vec3(2.0f,  5.0f, -15.0f),
-		vec3(-1.5f, -2.2f, -2.5f),
-		vec3(-3.8f, -2.0f, -12.3f),
-		vec3(2.4f, -0.4f, -3.5f),
-		vec3(-1.7f,  3.0f, -7.5f),
-		vec3(1.3f, -2.0f, -2.5f),
-		vec3(1.5f,  2.0f, -2.5f),
-		vec3(1.5f,  0.2f, -1.5f),
-		vec3(-1.3f,  1.0f, -1.5f)
-	};
+	//vec3 cubePositions[] = {
+	//	vec3(0.0f,  0.0f,  0.0f),
+	//	vec3(2.0f,  5.0f, -15.0f),
+	//	vec3(-1.5f, -2.2f, -2.5f),
+	//	vec3(-3.8f, -2.0f, -12.3f),
+	//	vec3(2.4f, -0.4f, -3.5f),
+	//	vec3(-1.7f,  3.0f, -7.5f),
+	//	vec3(1.3f, -2.0f, -2.5f),
+	//	vec3(1.5f,  2.0f, -2.5f),
+	//	vec3(1.5f,  0.2f, -1.5f),
+	//	vec3(-1.3f,  1.0f, -1.5f)
+	//};
 
-	light_source dir_light(light_source::DIRLIGHT);
-	dir_light.set_direction({ -0.2f, -1.0f, -0.3f });
-	dir_light.set_ambient({ 0.05f, 0.05f, 0.05f });
-	dir_light.set_diffuse({ 0.4f, 0.4f, 0.4f });
-	dir_light.set_specular({ 0.5f, 0.5f, 0.5f });
+	//light_source dir_light(light_source::DIRLIGHT);
+	//dir_light.set_direction({ -0.2f, -1.0f, -0.3f });
+	//dir_light.set_ambient({ 0.05f, 0.05f, 0.05f });
+	//dir_light.set_diffuse({ 0.4f, 0.4f, 0.4f });
+	//dir_light.set_specular({ 0.5f, 0.5f, 0.5f });
 
-	std::vector<light_source> point_lights;
-	point_lights.push_back({ light_source::POINTLIGHT, {0.7f,  0.2f,  2.0f}, { 0.05f, 0.05f, 0.05f },
-		{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09,  0.032 });
-	point_lights.push_back({ light_source::POINTLIGHT, {2.3f, -3.3f, -4.0f}, { 0.05f, 0.05f, 0.05f },
-		{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032 });
-	point_lights.push_back({ light_source::POINTLIGHT, {-4.0f,  2.0f, -12.0f}, { 0.05f, 0.05f, 0.05f },
-		 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
-	point_lights.push_back({ light_source::POINTLIGHT, {0.0f,  0.0f, -3.0f}, { 0.05f, 0.05f, 0.05f },
-		 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
+	//std::vector<light_source> point_lights;
+	//point_lights.push_back({ light_source::POINTLIGHT, {0.7f,  0.2f,  2.0f}, { 0.05f, 0.05f, 0.05f },
+	//	{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09,  0.032 });
+	//point_lights.push_back({ light_source::POINTLIGHT, {2.3f, -3.3f, -4.0f}, { 0.05f, 0.05f, 0.05f },
+	//	{ 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032 });
+	//point_lights.push_back({ light_source::POINTLIGHT, {-4.0f,  2.0f, -12.0f}, { 0.05f, 0.05f, 0.05f },
+	//	 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
+	//point_lights.push_back({ light_source::POINTLIGHT, {0.0f,  0.0f, -3.0f}, { 0.05f, 0.05f, 0.05f },
+	//	 { 0.8f, 0.8f, 0.8f }, { 1.0f, 1.0f, 1.0f }, 1.0f,  0.09, 0.032 });
 
-	light_source spot(light_source::SPOTLIGHT, camera.get_position(), camera.get_front(), { 0.0f, 0.0f, 0.0f },
-		{ 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032, glm::cos(glm::radians(12.5f)),
-		glm::cos(glm::radians(15.0f)));
+	//light_source spot(light_source::SPOTLIGHT, camera.get_position(), camera.get_front(), { 0.0f, 0.0f, 0.0f },
+	//	{ 1.0f, 1.0f, 1.0f }, { 1.0f, 1.0f, 1.0f }, 1.0f, 0.09, 0.032, glm::cos(glm::radians(12.5f)),
+	//	glm::cos(glm::radians(15.0f)));
 
 	// 1. Настраиваем VAO (и VBO) 
 
-	uniform_array skybox_arr;
+	/*uniform_array skybox_arr;
 	uniform_buffer skybox_buffer(skyboxVertices, sizeof(skyboxVertices) / sizeof(float));
 
 	skybox_buffer.bind();
@@ -227,18 +233,61 @@ int main() {
 
 	vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	vertex_arrays_ob.vertex_attrib_pointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	vertex_arrays_ob.vertex_attrib_pointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	vertex_arrays_ob.vertex_attrib_pointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));*/
 
+	unsigned int gBuffer;
+	glGenFramebuffers(1, &gBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+	unsigned int gPosition, gNormal, gColorSpec, gAlbedoSpec;
 
+	// Цветовой буфер позиций
+	glGenTextures(1, &gPosition);
+	glBindTexture(GL_TEXTURE_2D, gPosition);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1800, 1600, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, gPosition, 0);
+
+	// Цветовой буфер нормалей
+	glGenTextures(1, &gNormal);
+	glBindTexture(GL_TEXTURE_2D, gNormal);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 1800, 1600, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, gNormal, 0);
+
+	// Цветовой буфер цвета + отраженной составляющей
+	glGenTextures(1, &gAlbedoSpec);
+	glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1800, 1600, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedoSpec, 0);
+
+	// Сообщаем OpenGL, какой прикрепленный цветовой буфер (задействованного фреймбуфера) собираемся использовать для рендеринга
+	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, attachments);
+
+	// Создаем и прикрепляем буфер глубины (рендербуфер)
+	unsigned int rboDepth;
+	glGenRenderbuffers(1, &rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1800, 1600);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+	// Проверяем готовность фреймбуфера
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	std::cout << "Framebuffer not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// 2. Настраиваем VAO света (VBO остается неизменным; вершины те же и для светового объекта, который также является 3D-кубом)
-	uniform_array light_vertex_arrays_ob;
+	//uniform_array light_vertex_arrays_ob;
 
-	buffer_object.bind();
+	////buffer_object.bind();
 
-	light_vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	//light_vertex_arrays_ob.vertex_attrib_pointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 
-	std::vector<std::string> faces
+	/*std::vector<std::string> faces
 	{
 		"../../../../Desktop/right.jpg",
 		"../../../../Desktop/left.jpg",
@@ -250,18 +299,59 @@ int main() {
 	unsigned int cubemapTexture = loadCubemap(faces);
 
 	texture diffuse_map("../../../../Desktop/P163301-4-zoom-1.jpg");
-	texture specular_map("../../../../Desktop/container_2_specular.png");
+	texture specular_map("../../../../Desktop/container_2_specular.png");*/
 
-	lightingShader.use();
+	const unsigned int NR_LIGHTS = 32;
+	std::vector<vec3> lightPositions;
+	std::vector<vec3> lightColors;
+	srand(13);
+	for (unsigned int i = 0; i < NR_LIGHTS; i++)
+	{
+		// calculate slightly random offsets
+		float xPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+		float yPos = ((rand() % 100) / 100.0) * 6.0 - 4.0;
+		float zPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+		lightPositions.push_back(vec3(xPos, yPos, zPos));
+		// also calculate random color
+		float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+		float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+		float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+		lightColors.push_back(vec3(rColor, gColor, bColor));
+	}
+
+	//const unsigned int NR_LIGHTS = 32;
+	//std::vector<glm::vec3> lightPositions;
+	//std::vector<glm::vec3> lightColors;
+	//srand(13);
+	//for (unsigned int i = 0; i < NR_LIGHTS; i++)
+	//{
+	//	// calculate slightly random offsets
+	//	float xPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+	//	float yPos = ((rand() % 100) / 100.0) * 6.0 - 4.0;
+	//	float zPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+	//	lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
+	//	// also calculate random color
+	//	float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+	//	float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+	//	float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+	//	lightColors.push_back(glm::vec3(rColor, gColor, bColor));
+	//}
+
+	lighting_shader.use();
+	lighting_shader.set_int("gPosition", 0);
+	lighting_shader.set_int("gNormal", 1);
+	lighting_shader.set_int("gAlbedoSpec", 2);
+	/*lightingShader.use();
 	lightingShader.set_int("material.diffuse", emerald.get_diffuse());
-	lightingShader.set_int("material.specular", emerald.get_specular());
+	lightingShader.set_int("material.specular", emerald.get_specular());*/
 
-	skyboxShader.use();
-	skyboxShader.set_int("skybox", 0);
+	/*skyboxShader.use();
+	skyboxShader.set_int("skybox", 0);*/
 
 	shader_wrapper load_shader("model_loading.vs", "model_loading.fs");
 	stbi_set_flip_vertically_on_load(true);
 	Model Model("C:/Users/79242/Desktop/backpack/backpack.obj");
+
 	std::vector<vec3> objectPositions;
 	objectPositions.push_back(vec3(-0.7f, 0.0f, 0.0f));
 	objectPositions.push_back(vec3(0.0f, 0.0f, 0.0f));
@@ -269,6 +359,10 @@ int main() {
 	objectPositions.push_back(vec3(-0.7f, 0.0, 0.7f));
 	objectPositions.push_back(vec3(0.0f, 0.0f, 0.7f));
 	objectPositions.push_back(vec3(0.7f, 0.0, 0.7f));
+	objectPositions.push_back(vec3(4.7f, 0.0, 4.0f));
+	objectPositions.push_back(vec3(3.7f, 0.0, 3.7f));
+	objectPositions.push_back(vec3(-3.7f, 0.0, -3.7f));
+	objectPositions.push_back(vec3(0.0f, 4.7f, 4.0f));
 
 	// цикл рендера
 	bool isGo = true;
@@ -322,204 +416,100 @@ int main() {
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //отчистка экрана
 
-		load_shader.use();
+		// 1. Геометрический проход: выполняем рендеринг геометрических/цветовых данных сцены в g-буфер
+		glBindFramebuffer(GL_FRAMEBUFFER, gBuffer);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		mat4 proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
-		auto view = camera.get_view_matrix();
-		load_shader.set_mat4("projection", proj, true);
-		load_shader.set_mat4("view", view, false);
-
-		/*for (int i = 0; i < objectPositions.size(); i++) {
-			auto model_tr = translate(objectPositions[i]);
-			model_tr = model_tr * scale(objectPositions[i]);
-			load_shader.set_mat4("model", model_tr, true);
-
-			Model.Draw(load_shader);
-		}*/
-
-		//auto model_tr = translate(objectPositions[0]);
-		////model_tr = model_tr * scale(objectPositions[0]);
-		//load_shader.set_mat4("model", model_tr, false);
-
-		//Model.Draw(load_shader);
-		/*vec3 model_vec(0.5f, -0.5f, 0.0f);
-		auto model_tr = translate(model_vec);
-
-		auto model = glm::mat4(1.0f);
-		model = glm::translate(model, { 0.5f, -0.5f, 0.0f });
-
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				std::cout << model[i][j] << " ";
-			}
-			std::cout << std::endl;
-		}
-		std::cout << std::endl;
-		std::cout << std::endl;
-
-
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				std::cout << model_tr.get_value(j, i) << " ";
-			}
-			std::cout << std::endl;
-		}*/
 		
+
+		mat4 proj = perspective(glm::radians(45.0f), (GLfloat)1800 / (GLfloat)1600, 0.1f, 100.0f);
+		auto view = camera.get_view_matrix();
+		geometry_shader.use();
+		geometry_shader.set_mat4("projection", proj, true);
+		geometry_shader.set_mat4("view", view, false);
+
 		for (int i = 0; i < objectPositions.size(); i++) {
 			vec3 scale_vec(0.2f, 0.2f, 0.2f);
 			auto model_tr = translate(objectPositions[i]);
 			model_tr = model_tr * scale(scale_vec);
-			load_shader.set_mat4("model", model_tr, true);
-			Model.Draw(load_shader);
+			geometry_shader.set_mat4("model", model_tr, true);
+			Model.Draw(geometry_shader);
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// 2. Проход освещения
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, gPosition);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, gNormal);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, gAlbedoSpec);
+
+		lighting_shader.use();
+
+		for (unsigned int i = 0; i < lightPositions.size(); i++)
+		{
+
+			lighting_shader.set_vec3("lights[" + std::to_string(i) + "].Position", lightPositions[i]);
+			lighting_shader.set_vec3("lights[" + std::to_string(i) + "].Color", lightColors[i]);
+			// update attenuation parameters and calculate radius
+			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+			const float linear = 0.7;
+			const float quadratic = 1.8;
+			lighting_shader.set_float("lights[" + std::to_string(i) + "].Linear", linear);
+			lighting_shader.set_float("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+			// then calculate radius of light volume/sphere
+			const float maxBrightness = std::fmaxf(std::fmaxf(lightColors[i].get_a1(), lightColors[i].get_a2()), lightColors[i].get_a3());
+			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
+			lighting_shader.set_float("lights[" + std::to_string(i) + "].Radius", radius);
+		}
+		lighting_shader.set_vec3("viewPos", camera.get_position());
+		// finally render quad
+		renderQuad();
+
+
+		// 2.5. Копируем содержимое буфера глубины (геометрический проход) в буфер глубины заданного по умолчанию фреймбуфера
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+		// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
+		// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
+		// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
+		glBlitFramebuffer(0, 0, 1800, 1600, 0, 0, 1800, 1600, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// 3. Рендерим источники освещения вверху сцены
+		light_cube_shader.use();
+		light_cube_shader.set_mat4("projection", proj, true);
+		light_cube_shader.set_mat4("view", view, false);
+		for (unsigned int i = 0; i < lightPositions.size(); i++)
+		{
+
+			vec3 scale_vec(0.2f, 0.2f, 0.2f);
+			auto model_tr = translate(lightPositions[i]);
+			model_tr = model_tr * scale(scale_vec);
+			light_cube_shader.set_mat4("model", model_tr, true);
+			light_cube_shader.set_vec3("lightColor", lightColors[i]);
+			renderCube();
 		}
 
-		/*vec3 model_vec(1.0f, 0.0f, 0.0f);
-		vec3 scale_vec(0.2f, 0.2f, 0.2f);
-		vec3 rotate_vec(1.0f, 0.0f, 0.0f);
-		auto model_tr = translate(model_vec);
-		model_tr = model_tr * scale(scale_vec);
-		load_shader.set_mat4("model", model_tr, true);
-		Model.Draw(load_shader);
+		
 
-		vec3 model_vec2(0.0f, 0.0f, 0.0f);
-		vec3 scale_vec2(0.2f, 0.2f, 0.2f);
-		vec3 rotate_vec2(1.0f, 0.0f, 0.0f);
-		auto model_tr2 = translate(model_vec2);
-		model_tr2 = model_tr2 * scale(scale_vec2);
-		load_shader.set_mat4("model", model_tr2, true);
-		Model.Draw(load_shader);*/
+		//glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
+		//skyboxShader.use();
+		//view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
+		//glUniformMatrix4fv(glGetUniformLocation(skyboxShader.get_shader_id(), "view"), 1, GL_FALSE, &sky_view[0][0]);
+		////skyboxShader.set_mat4("view", our_sky_view, false);
+		//skyboxShader.set_mat4("projection", sky_projection, true);
 
-		lightingShader.use();
-		lightingShader.set_vec3("viewPos", camera.get_position());
-		lightingShader.set_float("material.shininess", emerald.get_shininess());
-
-
-		// Направленный свет
-		lightingShader.set_vec3("dirLight.direction", dir_light.get_direction());
-		lightingShader.set_vec3("dirLight.ambient", dir_light.get_ambient());
-		lightingShader.set_vec3("dirLight.diffuse", dir_light.get_diffuse());
-		lightingShader.set_vec3("dirLight.specular", dir_light.get_specular());
-
-		// Точечный источник света №1
-		lightingShader.set_vec3("pointLights[0].position", point_lights[0].get_position());
-		lightingShader.set_vec3("pointLights[0].ambient", point_lights[0].get_ambient());
-		lightingShader.set_vec3("pointLights[0].diffuse", point_lights[0].get_diffuse());
-		lightingShader.set_vec3("pointLights[0].specular", point_lights[0].get_specular());
-		lightingShader.set_float("pointLights[0].constant", point_lights[0].get_constant());
-		lightingShader.set_float("pointLights[0].linear", point_lights[0].get_linear());
-		lightingShader.set_float("pointLights[0].quadratic", point_lights[0].get_quadratic());
-
-		// Точечный источник света №2
-		lightingShader.set_vec3("pointLights[1].position", point_lights[1].get_position());
-		lightingShader.set_vec3("pointLights[1].ambient", point_lights[1].get_ambient());
-		lightingShader.set_vec3("pointLights[1].diffuse", point_lights[1].get_diffuse());
-		lightingShader.set_vec3("pointLights[1].specular", point_lights[1].get_specular());
-		lightingShader.set_float("pointLights[1].constant", point_lights[1].get_constant());
-		lightingShader.set_float("pointLights[1].linear", point_lights[1].get_linear());
-		lightingShader.set_float("pointLights[1].quadratic", point_lights[1].get_quadratic());
-
-		// Точечный источник света №3
-		lightingShader.set_vec3("pointLights[2].position", point_lights[2].get_position());
-		lightingShader.set_vec3("pointLights[2].ambient", point_lights[2].get_ambient());
-		lightingShader.set_vec3("pointLights[2].diffuse", point_lights[2].get_diffuse());
-		lightingShader.set_vec3("pointLights[2].specular", point_lights[2].get_specular());
-		lightingShader.set_float("pointLights[2].constant", point_lights[2].get_constant());
-		lightingShader.set_float("pointLights[2].linear", point_lights[2].get_linear());
-		lightingShader.set_float("pointLights[2].quadratic", point_lights[2].get_quadratic());
-
-		// Точечный источник света №4
-		lightingShader.set_vec3("pointLights[3].position", point_lights[3].get_position());
-		lightingShader.set_vec3("pointLights[3].ambient", point_lights[3].get_ambient());
-		lightingShader.set_vec3("pointLights[3].diffuse", point_lights[3].get_diffuse());
-		lightingShader.set_vec3("pointLights[3].specular", point_lights[3].get_specular());
-		lightingShader.set_float("pointLights[3].constant", point_lights[3].get_constant());
-		lightingShader.set_float("pointLights[3].linear", point_lights[3].get_linear());
-		lightingShader.set_float("pointLights[3].quadratic", point_lights[3].get_quadratic());
-
-
-		// Прожектор
-		lightingShader.set_vec3("spotLight.position", spot.get_position());
-		lightingShader.set_vec3("spotLight.direction", spot.get_direction());
-		lightingShader.set_vec3("spotLight.ambient", spot.get_ambient());
-		lightingShader.set_vec3("spotLight.diffuse", spot.get_diffuse());
-		lightingShader.set_vec3("spotLight.specular", spot.get_specular());
-		lightingShader.set_float("spotLight.constant", spot.get_constant());
-		lightingShader.set_float("spotLight.linear", spot.get_linear());
-		lightingShader.set_float("spotLight.quadratic", spot.get_quadratic());
-		lightingShader.set_float("spotLight.cutOff", spot.get_cutOff());
-		lightingShader.set_float("spotLight.outerCutOff", spot.get_outerCutOff());
-
-
-		diffuse_map.bind(0);
-		specular_map.bind(1);
-
-		vertex_arrays_ob.bind();
-
-		/*auto proj = perspective(glm::radians(45.0f), (GLfloat)800 / (GLfloat)600, 0.1f, 100.0f);
-		auto view = camera.get_view_matrix();
-		lightingShader.set_mat4("view", view, false);
-		auto prj = camera.get_projection_matrix();*/
-		lightingShader.set_mat4("projection", proj, true);
-
-
-		//for (int i = 0; i < 10; i++) {
-		//	mat4 model_new = translate(cubePositions[i]);
-		//	float angle = 20.0f * i;
-		//	model_new = model_new * rotate(glm::radians(angle), vec3(1.0f, 0.3f, 0.5f));
-		//	lightingShader.set_mat4("model", model_new, true);
-		//	glDrawArrays(GL_TRIANGLES, 0, 36);
-		//}
-
-		lightCubeShader.use();
-		lightCubeShader.set_mat4("projection", proj, true);
-		lightCubeShader.set_mat4("view", view, false);
-
-		/*light_vertex_arrays_ob.bind();
-		for (unsigned int i = 0; i < 4; i++)
-		{
-			auto t_mat = point_lights[i].get_position();
-			mat4 light_model = translate(t_mat);
-			vec3 scale_vec(0.4, 0.4, 0.4);
-			light_model = light_model * scale(scale_vec);
-			lightCubeShader.set_mat4("model", light_model, true);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}*/
-
-		glm::vec3 vec1(camera.get_position().get_a1() , camera.get_position().get_a2(), camera.get_position().get_a3());
-		glm::vec3 vec2((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
-		glm::vec3 vec__3(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
-		mat4 sky_projection = perspective(glm::radians(45.0f), (float)1800 / (float)1600, 0.1f, 100.0f);
-		glm::mat4 sky_view = glm::mat4(glm::mat3(glm::lookAt(vec1, vec2, vec__3)));
-
-
-		//vec3 vec1_our(camera.get_position().get_a1(), camera.get_position().get_a2(), camera.get_position().get_a3());
-		//vec3 vec2_our((camera.get_position() + camera.get_front()).get_a1(), (camera.get_position() + camera.get_front()).get_a2(), (camera.get_position() + camera.get_front()).get_a3());
-		//vec3 vec__3_our(camera.get_up().get_a1(), camera.get_up().get_a2(), camera.get_up().get_a3());
-		//mat4 our_sky_view = look_at(vec1_our, vec2_our, vec__3_our);
-
-		//for (int i = 0; i < 4; i++) {
-		//	for (int j = 0; j < 4; j++) {
-		//		//std::cout << our_sky_view.get_value(i, j) << "  " << sky_view[i][j] << "    " << i << " " << j << std::endl;
-		//		std::cout << our_sky_view.get_value(i, j) << " ";
-		//	}
-		//	std::cout << std::endl;
-		//}
-
-
-		glDepthFunc(GL_LEQUAL); // меняем функцию глубины, чтобы обеспечить прохождение теста глубины, когда значения равны содержимому буфера глубины
-		skyboxShader.use();
-		view = camera.get_view_mat3(); // убираем из матрицы вида секцию, отвечающую за операцию трансляции
-		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.get_shader_id(), "view"), 1, GL_FALSE, &sky_view[0][0]);
-		//skyboxShader.set_mat4("view", our_sky_view, false);
-		skyboxShader.set_mat4("projection", sky_projection, true);
-
-		//// Куб скайбокса
-		skybox_arr.bind();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-		glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
+		////// Куб скайбокса
+		//skybox_arr.bind();
+		//glActiveTexture(GL_TEXTURE0);
+		//glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glBindVertexArray(0);
+		//glDepthFunc(GL_LESS); // восстанавливаем стандартное значение функции теста глубины
+		
 
 		window.display();
 	}
@@ -625,4 +615,110 @@ unsigned int loadCubemap(std::vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
+}
+
+
+unsigned int cubeVAO = 0;
+unsigned int cubeVBO = 0;
+void renderCube()
+{
+	// initialize (if necessary)
+	if (cubeVAO == 0)
+	{
+		float vertices[] = {
+			// back face
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			// front face
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			// left face
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			// right face
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			// bottom face
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			// top face
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+		};
+		glGenVertexArrays(1, &cubeVAO);
+		glGenBuffers(1, &cubeVBO);
+		// fill buffer
+		glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		// link vertex attributes
+		glBindVertexArray(cubeVAO);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+	// render Cube
+	glBindVertexArray(cubeVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+
+// renderQuad() renders a 1x1 XY quad in NDC
+// -----------------------------------------
+unsigned int quadVAO = 0;
+unsigned int quadVBO;
+void renderQuad()
+{
+	if (quadVAO == 0)
+	{
+		float quadVertices[] = {
+			// positions        // texture Coords
+			-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+			 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+			 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+		};
+		// setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
 }

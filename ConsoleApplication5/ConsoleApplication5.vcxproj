@@ -191,6 +191,12 @@
     <None Include="..\..\..\..\Desktop\res\shaders\e2.vs" />
     <None Include="..\..\..\..\Desktop\res\shaders\e4.fs" />
     <None Include="..\..\..\..\Desktop\res\shaders\e4.vs" />
+    <None Include="defered_light_box.vs" />
+    <None Include="deferred_light_box.fs" />
+    <None Include="deferred_shading.vs" />
+    <None Include="deffered_shading.fs" />
+    <None Include="g_buffer.fs" />
+    <None Include="g_buffer.vs" />
     <None Include="light_cube.fs" />
     <None Include="light_cube.vs" />
     <None Include="light_casters.fs" />
