@@ -7,6 +7,7 @@
 class uniform_buffer {
 public:
     uniform_buffer(float vertices[], int size);
+    uniform_buffer();
 
     ~uniform_buffer();
 

@@ -7,6 +7,7 @@ uniform_buffer::uniform_buffer(float vertices[], int size) {
     glBufferData(GL_ARRAY_BUFFER, size*sizeof(vertices), vertices, GL_STATIC_DRAW);
 }
 
+
 uniform_buffer::~uniform_buffer() {
     glDeleteBuffers(1, &ID);
 }
