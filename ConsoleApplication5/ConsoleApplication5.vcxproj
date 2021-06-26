@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ConsoleApplication5.cpp" />
+    <ClCompile Include="frame_buffer.cpp" />
     <ClCompile Include="light_source.cpp" />
     <ClCompile Include="mat2.cpp" />
     <ClCompile Include="mat3.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="opengl_test.cpp" />
+    <ClCompile Include="render_buffer.cpp" />
     <ClCompile Include="shaderLoader.cpp" />
     <ClCompile Include="shader_wrapper.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -166,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="frame_buffer.h" />
     <ClInclude Include="light_source.h" />
     <ClInclude Include="mat2.h" />
     <ClInclude Include="mat3.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="math_test.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="render_buffer.h" />
     <ClInclude Include="shaderLoader.h" />
     <ClInclude Include="shader_wrapper.h" />
     <ClInclude Include="stb_image.h" />
