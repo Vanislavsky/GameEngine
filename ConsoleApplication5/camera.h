@@ -3,6 +3,8 @@
 #include"vec4.h"
 #include"vec3.h"
 #include"mat4.h"
+#include<GL/glew.h>
+
 
 class camera {
 public:
@@ -42,8 +44,17 @@ public:
 	float m_near;
 	float m_far;
 
-	float yaw;
-	float pitch;
+	/*float yaw;
+	float pitch;*/
+
+	GLfloat cameraSpeed = 0.05f;
+
+	GLfloat yaw = -90.0f;	// Yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right (due to how Eular angles work) so we initially rotate a bit to the left.
+	GLfloat pitch = 0.0f;
+	GLfloat lastX = 1800 / 2.0;
+	GLfloat lastY = 1600 / 2.0;
+	bool firstMouse = true;
 
 	void update_canera_vectors();
+	void updateMouseMovement(float xpos, float ypos);
 };

@@ -41,7 +41,7 @@ private:
 
 
 mat4 unit_mat4();
-mat4 translate(vec3&);
+mat4 translate(const vec3&);
 mat4 scale(vec3&);
 mat4 rotate(float, const vec3&);
 mat4 r(vec4& _vec, float angle, vec3& arbitrary_axis);

@@ -144,7 +144,10 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="ConsoleApplication5.cpp" />
+    <ClCompile Include="Core.cpp" />
     <ClCompile Include="frame_buffer.cpp" />
+    <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LightObject.cpp" />
     <ClCompile Include="light_source.cpp" />
     <ClCompile Include="mat2.cpp" />
     <ClCompile Include="mat3.cpp" />
@@ -153,8 +156,11 @@
     <ClCompile Include="math_test.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="opengl_test.cpp" />
+    <ClCompile Include="render.cpp" />
     <ClCompile Include="render_buffer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="shaderLoader.cpp" />
     <ClCompile Include="shader_wrapper.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -165,10 +171,14 @@
     <ClCompile Include="vec3.cpp" />
     <ClCompile Include="vec4.cpp" />
     <ClCompile Include="Vertex.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="frame_buffer.h" />
+    <ClInclude Include="InputManager.h" />
+    <ClInclude Include="LightObject.h" />
     <ClInclude Include="light_source.h" />
     <ClInclude Include="mat2.h" />
     <ClInclude Include="mat3.h" />
@@ -177,7 +187,10 @@
     <ClInclude Include="math_test.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="render.h" />
     <ClInclude Include="render_buffer.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="shaderLoader.h" />
     <ClInclude Include="shader_wrapper.h" />
     <ClInclude Include="stb_image.h" />
@@ -188,6 +201,7 @@
     <ClInclude Include="vec3.h" />
     <ClInclude Include="vec4.h" />
     <ClInclude Include="Vertex.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\Desktop\pokemon-laplas\source\Pokémon - Lapras.blend" />

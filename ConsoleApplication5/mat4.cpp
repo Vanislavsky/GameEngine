@@ -230,7 +230,7 @@ mat4 unit_mat4() {
 	return unit_mat4;
 }
 
-mat4 translate(vec3& translate_vec) {
+mat4 translate(const vec3& translate_vec) {
 	mat4 off_mat4;
 	off_mat4.set_value(1, 0, 0);
 	off_mat4.set_value(1, 1, 1);

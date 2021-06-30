@@ -93,3 +93,33 @@ void camera::update_canera_vectors() {
 	right = front.vector_product(world_up).normal();
 	up = right.vector_product(front).normal();
 }
+
+void camera::updateMouseMovement(float xpos, float ypos) {
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	GLfloat xoffset = lastX - xpos;
+	GLfloat yoffset = ypos - lastY; // Reversed since y-coordinates go from bottom to left
+	lastX = xpos;
+	lastY = ypos;
+
+	yaw += xoffset * 0.05;
+	pitch += yoffset * 0.05;
+
+	// Make sure that when pitch is out of bounds, screen doesn't get flipped
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+
+	vec3 front;
+	front.set_a1(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+	front.set_a2(sin(glm::radians(pitch)));
+	front.set_a3(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+
+	set_front(front.normal());
+}
