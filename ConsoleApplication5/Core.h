@@ -35,30 +35,21 @@
 #include"Model.h"
 
 #include "Window.h"
-
+#include"InputManager.h"
 #include"render.h"
 #include"Scene.h"
 
 class Core
 {
 public:
-	Core();
-	void preUpdate();
-	void upadte();
+	void init();
+	void update();
 	void postUpdate();
 
 private:
 	Window window;
-	//InputManager inputManager;
+	InputManager inputManager;
 	Render render;
-	shader_wrapper geometry_shader;
-	shader_wrapper lighting_shader;
-	shader_wrapper light_cube_shader;
-	frame_buffer gBuffer;
-	texture gPosition;
-	texture gNormal;
-	texture gAlbedoSpec;
-	render_buffer rboDepth;
 	Scene scene;
 
 };

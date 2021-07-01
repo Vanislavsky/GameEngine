@@ -4,11 +4,11 @@
 #include"LightObject.h"
 #include<vector>
 #include"camera.h"
+#include"Components.h"
 
 class Scene
 {
 public:
-	camera& getCamera();
 	std::vector<Object>& getObjects();
 	std::vector<LightObject>& getLightObjects();
 
@@ -17,7 +17,5 @@ public:
 
 private:
 	std::vector<Object> objects;
-	std::vector<LightObject> lightObjects;
-	camera camera;
 };
 

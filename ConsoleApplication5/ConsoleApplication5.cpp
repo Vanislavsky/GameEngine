@@ -10,11 +10,11 @@
 int main() {
 
 	Core core;
-	core.preUpdate();
+	core.init();
 	// цикл рендера
 	bool isgo = true;
 	while (isgo) {
-		core.upadte();
+		core.update();
 		core.postUpdate();
 	}
 

@@ -6,9 +6,10 @@ Window::Window(unsigned int _width, unsigned int _height):
 	window(sf::VideoMode(_width, _height, 32), "First Window",
 		sf::Style::Titlebar | sf::Style::Close, settings) {}
 
-void Window::setCamera(camera* _cam) {
-	cam = _cam;
+sf::Window& Window::getWindow() {
+	return window;
 }
+
 
 void Window::checkWindowEvents() {
 	sf::Event windowEvent;
@@ -16,29 +17,29 @@ void Window::checkWindowEvents() {
 		switch (windowEvent.type) {
 		case sf::Event::KeyPressed:
 			if (windowEvent.key.code == sf::Keyboard::W) {
-				auto pos_add = cam->get_front() * cam->cameraSpeed;
-				cam->set_postion(cam->get_position() - pos_add);
+				auto pos_add = Components::cam.get_front() * Components::cam.cameraSpeed;
+				Components::cam.set_postion(Components::cam.get_position() - pos_add);
 			}
 
 			if (windowEvent.key.code == sf::Keyboard::S) {
-				auto pos_min = cam->get_front() * cam->cameraSpeed;
-				cam->set_postion(cam->get_position() + pos_min);
+				auto pos_min = Components::cam.get_front() * Components::cam.cameraSpeed;
+				Components::cam.set_postion(Components::cam.get_position() + pos_min);
 
 			}
 
 			if (windowEvent.key.code == sf::Keyboard::A) {
-				auto pos_min = cam->get_front().vector_product(cam->get_up()).normal() * cam->cameraSpeed;
-				cam->set_postion(cam->get_position() - pos_min);
+				auto pos_min = Components::cam.get_front().vector_product(Components::cam.get_up()).normal() * Components::cam.cameraSpeed;
+				Components::cam.set_postion(Components::cam.get_position() - pos_min);
 			}
 
 			if (windowEvent.key.code == sf::Keyboard::D) {
-				auto pos_add = cam->get_front().vector_product(cam->get_up()).normal() * cam->cameraSpeed;
-				cam->set_postion(cam->get_position() + pos_add);
+				auto pos_add = Components::cam.get_front().vector_product(Components::cam.get_up()).normal() * Components::cam.cameraSpeed;
+				Components::cam.set_postion(Components::cam.get_position() + pos_add);
 			}
 			break;
 
 		case sf::Event::MouseMoved:
-			cam->updateMouseMovement(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+			Components::cam.updateMouseMovement(sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 			break;
 		default:
 			break;

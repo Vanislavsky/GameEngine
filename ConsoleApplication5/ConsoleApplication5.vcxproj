@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Components.cpp" />
     <ClCompile Include="ConsoleApplication5.cpp" />
     <ClCompile Include="Core.cpp" />
     <ClCompile Include="frame_buffer.cpp" />
@@ -175,6 +176,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Components.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="frame_buffer.h" />
     <ClInclude Include="InputManager.h" />

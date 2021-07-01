@@ -14,6 +14,7 @@
 #include"LightObject.h"
 #include"uniform_array.h"
 #include"uniform_buffer.h"
+#include"Components.h"
 
 class Render
 {
@@ -23,7 +24,7 @@ private:
 	//std::vector<LightObject*> lightObjects;
 public:
 	Render();
-	void rendering(camera* cam, std::vector<Object>& objects, std::vector<LightObject>& lightObjects, frame_buffer* gBuffer, texture* gPosition, texture* gNormal, texture* gAlbedoSpec, shader_wrapper* geometry_shader, shader_wrapper* lighting_shader, shader_wrapper* light_cube_shader);
+	void rendering(std::vector<Object>& objects);
 	void renderQuad();
 	void renderCube();
 
