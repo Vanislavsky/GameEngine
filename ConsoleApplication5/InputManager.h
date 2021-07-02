@@ -4,14 +4,13 @@
 #include <SFML/Graphics.hpp>
 #include"camera.h"
 #include"Window.h"
+#include"Components.h"
 
 class InputManager
 {
 public:
 	void setWindow(Window*);
-	void setCamera(camera* _cam);
 	void checkWindowEvents();
 private:
 	Window* window;
-	camera* cam;
 };
