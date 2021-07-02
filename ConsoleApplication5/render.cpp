@@ -25,14 +25,7 @@ void Render::rendering(std::vector<Object>& objects) {
 	Components::geometry_shader.set_mat4("view", view, false);
 
 	for (int i = 0; i < objects.size(); i++) {
-		if (objects[i].getType() == ObjectType::MODEL_OBJECT) {
-			vec3 scale_vec(0.2f, 0.2f, 0.2f);
-			vec3 pos = objects[i].getPosition();
-			auto model_tr = translate(pos);
-			model_tr = model_tr * scale(scale_vec);
-			Components::geometry_shader.set_mat4("model", model_tr, true);
-			(*objects[i].getModel()).Draw(Components::geometry_shader);
-		}
+		objects[i].drawObject();
 	}
 	Components::gBuffer.bind(GL_FRAMEBUFFER, 0);
 
@@ -43,22 +36,8 @@ void Render::rendering(std::vector<Object>& objects) {
 
 	Components::lighting_shader.use();
 
-	for (unsigned int i = 0; i < objects.size(); i++)
-	{
-		if (objects[i].getType() == ObjectType::LIGHT) {
-			Components::lighting_shader.set_vec3("lights[" + std::to_string(i) + "].Position", objects[i].getPosition());
-			Components::lighting_shader.set_vec3("lights[" + std::to_string(i) + "].Color", *objects[i].getColor());
-			// update attenuation parameters and calculate radius
-			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
-			const float linear = 0.7;
-			const float quadratic = 1.8;
-			Components::lighting_shader.set_float("lights[" + std::to_string(i) + "].Linear", linear);
-			Components::lighting_shader.set_float("lights[" + std::to_string(i) + "].Quadratic", quadratic);
-			// then calculate radius of light volume/sphere
-			const float maxBrightness = std::fmaxf(std::fmaxf((*objects[i].getColor()).get_a1(), (*objects[i].getColor()).get_a2()), (*objects[i].getColor()).get_a3());
-			float radius = (-linear + std::sqrt(linear * linear - 4 * quadratic * (constant - (256.0f / 5.0f) * maxBrightness))) / (2.0f * quadratic);
-			Components::lighting_shader.set_float("lights[" + std::to_string(i) + "].Radius", radius);
-		}
+	for (unsigned int i = 0; i < objects.size(); i++) {
+		objects[i].lightingPassage();
 	}
 
 	Components::lighting_shader.set_vec3("viewPos", Components::cam.get_position());
@@ -79,16 +58,8 @@ void Render::rendering(std::vector<Object>& objects) {
 	Components::light_cube_shader.use();
 	Components::light_cube_shader.set_mat4("projection", proj, true);
 	Components::light_cube_shader.set_mat4("view", view, false);
-	for (unsigned int i = 0; i < objects.size(); i++)
-	{
-		if (objects[i].getType() == ObjectType::LIGHT) {
-			vec3 scale_vec(0.2f, 0.2f, 0.2f);
-			auto model_tr = translate(objects[i].getPosition());
-			model_tr = model_tr * scale(scale_vec);
-			Components::light_cube_shader.set_mat4("model", model_tr, true);
-			Components::light_cube_shader.set_vec3("lightColor", *objects[i].getColor());
-			renderCube();
-		}
+	for (unsigned int i = 0; i < objects.size(); i++) {
+		objects[i].renderingLightingSources();
 	}
 }
 

@@ -1,7 +1,10 @@
 #include "Core.h"
 
 
+
+
 void Core::init() {
+
 	Components::init();
 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
@@ -20,16 +23,13 @@ void Core::init() {
 
 	//add backpacks
 	Object obj1(1, vec3(-0.7f, 0.0f, 0.0f));
-	obj1.addComponent(&Components::model);
-	obj1.setTypeObject(ObjectType::MODEL_OBJECT);
+	Components::addModelComponent(1);
 	scene.addObject(obj1);
 	Object obj2(2, vec3(0.0f, 0.0f, 0.0f));
-	obj2.addComponent(&Components::model);
-	obj2.setTypeObject(ObjectType::MODEL_OBJECT);
+	Components::addModelComponent(2);
 	scene.addObject(obj2);
 	Object obj3(3, vec3(0.7f, 0.0, 0.0f));
-	obj3.addComponent(&Components::model);
-	obj3.setTypeObject(ObjectType::MODEL_OBJECT);
+	Components::addModelComponent(3);
 	scene.addObject(obj3);
 
 
@@ -41,8 +41,7 @@ void Core::init() {
 		float yPos = ((rand() % 100) / 100.0) * 6.0 - 4.0;
 		float zPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
 		Object obj(4+i, vec3(xPos, yPos, zPos));
-		obj.addComponent(&Components::light);
-		obj.setTypeObject(ObjectType::LIGHT);
+		Components::addColorComponent(4 + i);
 		scene.addObject(obj);
 	}
 }

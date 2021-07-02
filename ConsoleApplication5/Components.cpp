@@ -7,11 +7,12 @@ shader_wrapper Components::light_cube_shader("defered_light_box.vs", "deferred_l
 texture Components::gPosition(0);
 texture Components::gNormal(1);
 texture Components::gAlbedoSpec(2);
-Model Components::model("C:/Users/79242/Desktop/backpack/backpack.obj");
-vec3 Components::light(0.5, 0.5, 0.0);
 camera Components::cam;
 render_buffer Components::rboDepth;
 frame_buffer Components::gBuffer;
+
+std::map<unsigned int, Model> Components::model_component;
+std::map<unsigned int, vec3> Components::light_component;
 
 float Components::quadVertices[] = {
 	// positions        // texture Coords
@@ -89,4 +90,13 @@ int Components::verticesSize() {
 }
 int Components::quadVerticesSize() {
 	return sizeof(quadVertices);
+}
+
+void Components::addModelComponent(unsigned int id) {
+	Model model("C:/Users/79242/Desktop/backpack/backpack.obj");
+	model_component[id] = model;
+}
+
+void Components::addColorComponent(unsigned int id) {
+	light_component[id] = vec3(0.5, 0.5, 0.0);
 }
