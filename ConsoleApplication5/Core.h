@@ -48,7 +48,6 @@ public:
 
 private:
 	Window window;
-	InputManager inputManager;
 	Render render;
 	Scene scene;
 

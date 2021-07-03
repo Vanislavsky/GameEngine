@@ -1,7 +1,7 @@
 #pragma once
 #include"Model.h"
 #include"vec3.h"
-
+#include <SFML/Window.hpp>
 #include"shader_wrapper.h"
 #include"texture.h"
 #include"render_buffer.h"
@@ -15,6 +15,7 @@
 class Object
 {
 public:
+	Object(unsigned int _id);
 	Object(unsigned int _id, vec3);
 
 	unsigned int getId();
@@ -24,6 +25,8 @@ public:
 
 	void addComponent(Model* _model);
 	void addComponent(vec3* _colorLight);
+
+	void updateState(sf::Event event, double x, double y);
 
 	void drawObject();
 	void lightingPassage();

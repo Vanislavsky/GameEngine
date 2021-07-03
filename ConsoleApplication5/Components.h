@@ -9,6 +9,7 @@
 #include"Model.h"
 #include"vec3.h"
 #include<map>
+#include"InputManager.h"
 
 static class Components
 {
@@ -19,6 +20,8 @@ public:
 
 	static void addModelComponent(unsigned int id);
 	static void addColorComponent(unsigned int id);
+	static void addCameraComponent(unsigned int id);
+	static void addInputComponent(unsigned int id);
 
 	static shader_wrapper geometry_shader;
 	static shader_wrapper lighting_shader;
@@ -30,9 +33,13 @@ public:
 	static render_buffer rboDepth;
 	static float quadVertices[];
 	static float vertices[];
+
 	static camera cam;
+	static InputManager inputManager;
 
 	static std::map<unsigned int, Model> model_component;
 	static std::map<unsigned int, vec3> light_component;
+	static std::map<unsigned int, camera*> camera_component;
+	static std::map<unsigned int, InputManager*> input_component;
 };
 

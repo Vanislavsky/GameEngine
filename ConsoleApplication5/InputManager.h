@@ -5,12 +5,13 @@
 #include"camera.h"
 #include"Window.h"
 #include"Components.h"
+#include"Object.h"
 
 class InputManager
 {
 public:
 	void setWindow(Window*);
-	void checkWindowEvents();
+	void checkWindowEvents(std::vector<Object>& objects);
 private:
 	Window* window;
 };

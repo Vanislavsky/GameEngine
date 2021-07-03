@@ -8,11 +8,14 @@ texture Components::gPosition(0);
 texture Components::gNormal(1);
 texture Components::gAlbedoSpec(2);
 camera Components::cam;
+InputManager Components::inputManager;
 render_buffer Components::rboDepth;
 frame_buffer Components::gBuffer;
 
 std::map<unsigned int, Model> Components::model_component;
 std::map<unsigned int, vec3> Components::light_component;
+std::map<unsigned int, camera*> Components::camera_component;
+std::map<unsigned int, InputManager*> Components::input_component;
 
 float Components::quadVertices[] = {
 	// positions        // texture Coords
@@ -83,6 +86,7 @@ void Components::init() {
 	cam.set_postion({ 0.0f, 0.0f,  3.0f });
 	cam.set_front({ 0.0f, 0.0f, -1.0f });
 	cam.set_up({ 0.0f, 1.0f, 0.0f });
+
 }
 
 int Components::verticesSize() {
@@ -99,4 +103,12 @@ void Components::addModelComponent(unsigned int id) {
 
 void Components::addColorComponent(unsigned int id) {
 	light_component[id] = vec3(0.5, 0.5, 0.0);
+}
+
+void Components::addCameraComponent(unsigned int id) {
+	camera_component[id] = &cam;
+}
+
+void Components::addInputComponent(unsigned int id) {
+	input_component[id] = &inputManager;
 }

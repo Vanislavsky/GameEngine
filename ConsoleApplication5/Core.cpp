@@ -14,12 +14,17 @@ void Core::init() {
 		std::cout << "Framebuffer not complete!" << std::endl;
 	Components::gBuffer.bind(GL_FRAMEBUFFER, 0);
 
-	inputManager.setWindow(&window);
+	Components::inputManager.setWindow(&window);
 
 	Components::lighting_shader.use();
 	Components::lighting_shader.set_int("gPosition", 0);
 	Components::lighting_shader.set_int("gNormal", 1);
 	Components::lighting_shader.set_int("gAlbedoSpec", 2);
+
+	Object camObj(0);
+
+	Components::addCameraComponent(0);
+	Components::addInputComponent(0);
 
 	//add backpacks
 	Object obj1(1, vec3(-0.7f, 0.0f, 0.0f));
@@ -48,7 +53,7 @@ void Core::init() {
 
 
 void Core::update() {
-	inputManager.checkWindowEvents();
+	Components::inputManager.checkWindowEvents(scene.getObjects());
 }
 
 void Core::postUpdate() {

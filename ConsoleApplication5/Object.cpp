@@ -1,5 +1,6 @@
 #include "Object.h"
 
+Object::Object(unsigned int _id) : id(_id) {}
 
 Object::Object(unsigned int _id, vec3 _position) : id(_id), position(_position) {}
 
@@ -15,6 +16,44 @@ vec3 Object::getPosition() {
 	return position;
 }
 
+
+void Object::updateState(sf::Event event, double x, double y) {
+	if (Components::input_component.find(id) != Components::input_component.end()) {
+		if (Components::camera_component.find(id) != Components::camera_component.end()) {
+			switch (event.type) {
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::W) {
+					auto pos_add = Components::cam.get_front() * Components::cam.cameraSpeed;
+					Components::cam.set_postion(Components::cam.get_position() - pos_add);
+				}
+
+				if (event.key.code == sf::Keyboard::S) {
+					auto pos_min = Components::cam.get_front() * Components::cam.cameraSpeed;
+					Components::cam.set_postion(Components::cam.get_position() + pos_min);
+
+				}
+
+				if (event.key.code == sf::Keyboard::A) {
+					auto pos_min = Components::cam.get_front().vector_product(Components::cam.get_up()).normal() * Components::cam.cameraSpeed;
+					Components::cam.set_postion(Components::cam.get_position() - pos_min);
+				}
+
+				if (event.key.code == sf::Keyboard::D) {
+					auto pos_add = Components::cam.get_front().vector_product(Components::cam.get_up()).normal() * Components::cam.cameraSpeed;
+					Components::cam.set_postion(Components::cam.get_position() + pos_add);
+				}
+				break;
+
+			case sf::Event::MouseMoved:
+				Components::cam.updateMouseMovement(x, y);
+				break;
+			default:
+				break;
+
+			}
+		}
+	}
+}
 
 void Object::drawObject() {
 	if (Components::model_component.find(id) != Components::model_component.end()) {
